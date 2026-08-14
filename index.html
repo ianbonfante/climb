@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Climb Parque de Cuerdas — Hub de Contenido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --violet-700:#5C3FB0; --violet-500:#8B6FDA; --violet-50:#F4F1FC; --line:#E6E1F2;
+  --brand:#E63329; /* <-- CAMBIA ESTE COLOR AL COLOR PRINCIPAL DEL CLIENTE */
+  --ink:#241C3A; --sub:#6E6484; --card:#FFFFFF; --bg:#FAF8FD; --radius:14px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Poppins',-apple-system,sans-serif;background:var(--bg);color:var(--ink);}
+.wrap{max-width:1200px;margin:0 auto;padding:32px 24px 80px;}
+header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:22px;}
+.headerleft{display:flex;align-items:center;gap:14px;}
+.headerleft img{width:52px;height:52px;border-radius:50%;object-fit:cover;}
+h1{font-family:'Poppins',sans-serif;font-size:27px;font-weight:700;margin:0 0 4px;color:var(--ink);}
+.sub{color:var(--sub);font-size:14px;margin:0;font-weight:300;}
+.btn{border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;font-family:'Poppins',sans-serif;}
+.btn-primary{background:var(--brand);color:#fff;}
+.btn-primary:hover{filter:brightness(0.9);}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);}
+.btn-ghost:hover{background:var(--violet-50);}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+.spacer{flex:1;}
+select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;background:#fff;color:var(--ink);font-family:'Poppins',sans-serif;}
+
+.viewtabs{display:flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px;}
+.viewtab{padding:6px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);}
+.viewtab.active{background:var(--violet-50);color:var(--violet-700);}
+
+#calLegend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
+#calLegend span{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:5px;}
+#calLegend i{width:15px;height:15px;border-radius:50%;color:#fff;font-size:8px;display:inline-flex;align-items:center;justify-content:center;}
+
+#calHead{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+#calHead div{text-align:center;font-size:12px;color:var(--sub);font-weight:600;text-transform:uppercase;}
+#calGrid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(110px,auto);gap:6px;}
+.day{min-height:0;height:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;position:relative;overflow-y:auto;}
+.day.empty{background:transparent;border:none;}
+.day.dragover{background:var(--violet-50);border-color:var(--violet-500);border-style:dashed;}
+.daynum{font-size:12px;color:var(--sub);font-weight:600;margin-bottom:4px;}
+.piece{position:relative;font-size:10.5px;padding:5px 6px;border-radius:6px;margin-bottom:4px;cursor:grab;font-weight:600;line-height:1.3;color:#fff;min-height:26px;overflow:hidden;background:var(--brand);}
+.piece.dragging{opacity:.4;}
+.piece.has-img{padding:0;aspect-ratio:1/1;height:auto;}
+.piece.has-img img.thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.piece.has-img span.txt{position:absolute;left:0;right:0;bottom:0;padding:5px 6px 4px;background:linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,0));white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.piece span.txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.piece .imgcount{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.status-dot{position:absolute;top:4px;right:4px;display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;z-index:2;font-size:9px;font-weight:700;box-shadow:0 0 0 1.5px rgba(255,255,255,.9);}
+.status-dot.cs-aprobado{background:#3FA671;color:#fff;}
+.status-dot.cs-cambios{background:#E0952E;color:#fff;}
+.status-dot.cs-pendiente{background:#C94F4F;color:#fff;}
+.format-pill{position:absolute;bottom:4px;right:4px;display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.92);backdrop-filter:blur(3px);color:#4A4456;font-size:8px;font-weight:600;padding:2px 7px 2px 5px;border-radius:20px;z-index:2;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.15);max-width:calc(100% - 8px);}
+.format-pill .ficon{font-size:7px;flex-shrink:0;opacity:.8;}
+.format-pill span{overflow:hidden;text-overflow:ellipsis;}
+
+#board{display:none;flex-direction:column;gap:10px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;}
+.cardtop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+.ctitle{font-weight:600;font-size:15px;margin:0 0 3px;}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.tag{font-size:11px;padding:2px 9px;border-radius:12px;font-weight:600;}
+.tag.pillar{background:var(--violet-50);color:var(--violet-700);}
+.tag.date{background:var(--bg);color:var(--sub);border:1px solid var(--line);}
+.tag.format{background:#EAF1FB;color:#2E5FA3;display:inline-flex;align-items:center;gap:5px;}
+.tag.format .ficon{width:14px;height:14px;border-radius:50%;background:#2E5FA3;color:#fff;font-size:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.status{font-size:11px;padding:4px 11px;border-radius:20px;font-weight:700;white-space:nowrap;}
+.status.idea{background:#EFEDF7;color:#6E6484;}
+.status.diseno{background:#FDF3DA;color:#8C6E23;}
+.status.aprobado{background:#E2F5E9;color:#1E6B44;}
+.status.programado{background:var(--violet-50);color:var(--violet-700);}
+.insp{margin-top:8px;font-size:13px;color:var(--sub);background:var(--bg);border-radius:8px;padding:8px 10px;display:flex;gap:8px;align-items:flex-start;font-weight:300;}
+.cardimg{margin-top:10px;max-width:340px;width:100%;border-radius:8px;display:block;cursor:pointer;}
+.gallery-strip{display:flex;gap:6px;margin-top:6px;}
+.gallery-strip img{width:52px;height:52px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;}
+.gallery-strip img.active{border-color:var(--violet-500);}
+.rowbtns{display:flex;gap:6px;margin-top:8px;}
+.smallbtn{font-size:12px;padding:5px 10px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--sub);font-family:'Poppins',sans-serif;}
+.smallbtn:hover{background:var(--bg);}
+.smallbtn.del{color:#B23434;}
+
+.review-panel{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+.review-label{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;}
+.review-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.rbtn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--sub);}
+.rbtn .ricon{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-size:9px;flex-shrink:0;}
+.rbtn.approved{border-color:#8FDBB5;color:#1E6B44;background:#F0FBF5;}
+.rbtn.approved .ricon{background:#3FA671;color:#fff;}
+.rbtn.changes{border-color:#F3C989;color:#8C6E23;background:#FFFAF0;}
+.rbtn.changes .ricon{background:#E0952E;color:#fff;}
+.rbtn.pending{border-color:#E8B3B3;color:#A33A3A;background:#FDF3F3;}
+.rbtn.pending .ricon{background:#C94F4F;color:#fff;}
+.rbtn.approved.active{background:#3FA671;color:#fff;border-color:#3FA671;}
+.rbtn.approved.active .ricon{background:rgba(255,255,255,.3);}
+.rbtn.changes.active{background:#E0952E;color:#fff;border-color:#E0952E;}
+.rbtn.changes.active .ricon{background:rgba(255,255,255,.3);}
+.rbtn.pending.active{background:#C94F4F;color:#fff;border-color:#C94F4F;}
+.rbtn.pending.active .ricon{background:rgba(255,255,255,.3);}
+.card.cs-approved{border-left:4px solid #3FA671;}
+.card.cs-changes{border-left:4px solid #E0952E;}
+.card.cs-pending{border-left:4px solid #C94F4F;}
+.review-comment{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:'Poppins',sans-serif;resize:vertical;min-height:44px;}
+.review-savebtn{margin-top:6px;font-size:11.5px;padding:5px 12px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--sub);}
+.review-savebtn:hover{background:var(--bg);}
+.comment-saved-note{font-size:11px;color:#3FA671;margin-left:8px;display:none;}
+
+#overlay{display:none;position:fixed;inset:0;background:rgba(36,28,58,.4);align-items:center;justify-content:center;z-index:50;padding:20px;}
+#modal{background:#fff;border-radius:16px;padding:26px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--sub);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:14px;font-family:'Poppins',sans-serif;}
+.field textarea{resize:vertical;min-height:60px;}
+.modalbtns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
+.note{font-size:12px;color:var(--sub);background:var(--bg);border-radius:8px;padding:10px;margin-top:16px;font-weight:300;}
+.empty-state{text-align:center;padding:50px 20px;color:var(--sub);}
+#lightbox{display:none;position:fixed;inset:0;background:rgba(13,13,13,.9);align-items:center;justify-content:center;z-index:60;padding:24px;}
+#lightbox img{max-width:100%;max-height:90vh;border-radius:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="headerleft">
+      <img src="logo.jpg" alt="Climb Parque de Cuerdas">
+      <div>
+        <h1>Hub de contenido</h1>
+        <p class="sub">Climb Parque de Cuerdas — calendario vivo de ideas, aprobación e inspiración</p>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btnNew">+ Nueva idea</button>
+  </header>
+
+  <div class="toolbar">
+    <select id="filterStatus">
+      <option value="">Todos los estados</option>
+      <option value="idea">Idea</option>
+      <option value="diseno">En diseño</option>
+      <option value="aprobado">Aprobado</option>
+      <option value="programado">Programado</option>
+    </select>
+    <div class="spacer"></div>
+    <div class="viewtabs">
+      <div class="viewtab active" data-view="calendar">Calendario</div>
+      <div class="viewtab" data-view="board">Lista</div>
+    </div>
+  </div>
+
+  <div id="monthNav" style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+    <button class="smallbtn" id="prevMonth">←</button>
+    <strong id="monthLabel" style="font-size:14px;"></strong>
+    <button class="smallbtn" id="nextMonth">→</button>
+  </div>
+
+  <div id="calLegend">
+    <span><i style="background:#3FA671;">✓</i>Aprobado</span>
+    <span><i style="background:#E0952E;">✎</i>Tiene cambios</span>
+    <span><i style="background:#C94F4F;">◔</i>Pendiente revisión</span>
+  </div>
+
+  <div id="calHead"></div>
+  <div id="calGrid"></div>
+  <div id="board"></div>
+  <div id="emptyState" class="empty-state">Todavía no hay ideas cargadas. Crea la primera con "+ Nueva idea".</div>
+</div>
+
+<div id="overlay">
+  <div id="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="margin:0;font-size:18px;">Nueva idea de contenido</h2>
+      <button type="button" id="btnCloseX" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--sub);line-height:1;padding:2px 6px;">✕</button>
+    </div>
+    <input type="hidden" id="editId">
+    <div class="field">
+      <label>Título</label>
+      <input type="text" id="fTitle" placeholder="Ej: Backstage armado de evento">
+    </div>
+    <div class="field">
+      <label>Desarrollo de la idea</label>
+      <textarea id="fDetail" placeholder="Describe el concepto completo de la pieza..."></textarea>
+    </div>
+    <div class="field">
+      <label>Pilar de contenido</label>
+      <input type="text" id="fPillar" list="pillarSuggestions" placeholder="Ej: Detrás de cámara, Testimonios, Tips...">
+      <datalist id="pillarSuggestions"></datalist>
+    </div>
+    <div class="field">
+      <label>Formato</label>
+      <select id="fFormat">
+        <option value="post">Post estático</option>
+        <option value="carrusel">Carrusel</option>
+        <option value="reel">Reel</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Inspiración para diseño (link, referencia o descripción visual)</label>
+      <textarea id="fInsp" placeholder="Ej: Reel estilo cámara en mano, luz natural. Link: https://..."></textarea>
+    </div>
+    <div class="field">
+      <label>Imágenes de ejemplo (opcional, hasta 4 — para ideas tipo carrusel)</label>
+      <input type="file" id="fImage" accept="image/*" multiple>
+      <div id="imgPreviewWrap" style="display:none;margin-top:8px;">
+        <div id="imgPreviewGrid" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Fecha de publicación</label>
+      <input type="date" id="fDate">
+    </div>
+    <div class="field">
+      <label>Estado</label>
+      <select id="fStatus">
+        <option value="idea">Idea</option>
+        <option value="diseno">En diseño</option>
+        <option value="aprobado">Aprobado</option>
+        <option value="programado">Programado</option>
+      </select>
+    </div>
+    <div class="modalbtns">
+      <button class="btn btn-ghost" id="btnCancel">Cancelar</button>
+      <button class="btn btn-primary" id="btnSave">Guardar</button>
+    </div>
+    <div class="note">Este hub vive en Supabase: todo lo que agreguen aquí lo ve el resto del equipo automáticamente, sin necesidad de cuentas ni login.</div>
+  </div>
+</div>
+
+<div id="lightbox"><img id="lightboxImg" src=""></div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN — cambia estos 2 valores por los del proyecto
+// de Supabase del cliente (Project Settings → API)
+// ============================================================
+const SUPABASE_URL = "https://jysdguvuwjkwzrwhnnnp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2RndXZ1d2prd3pyd2hubm5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDkyNjksImV4cCI6MjA5OTg4NTI2OX0.NiSJnGmZGIQKzka7aX3z0P3gpxSTh02807ETOwUO4WA";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let items = [];
+let currentView = "calendar";
+let cursor = new Date();
+cursor.setDate(1);
+let pendingImages = [];
+let formSnapshot = "";
+
+function statusLabel(s){ return {idea:"Idea",diseno:"En diseño",aprobado:"Aprobado",programado:"Programado"}[s]||s; }
+function formatLabel(f){ return {post:"Post estático",carrusel:"Carrusel",reel:"Reel"}[f]||"Post estático"; }
+function formatLabelShort(f){ return {post:"Post",carrusel:"Carrusel",reel:"Reel"}[f]||"Post"; }
+function formatIcon(f){ return {post:"▪",carrusel:"⧉",reel:"▶"}[f]||"▪"; }
+function linkify(text){
+  if(!text) return "";
+  const escaped = text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return escaped.replace(/(https?:\/\/[^\s<]+)/g, url => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--violet-700);text-decoration:underline;">${url}</a>`);
+}
+
+async function loadItems(){
+  const { data, error } = await sb.from("content_pieces_climb").select("*").order("created_at", { ascending: true });
+  if(error){ console.error(error); items = []; render(); return; }
+  items = (data||[]).map(r => ({ id:r.id, title:r.title, pillar:r.pillar, insp:r.insp, date:r.date, status:r.status, images: parseImages(r.image_data), client_status: r.client_status || "pendiente", client_comment: r.client_comment || "", detail: r.idea_detail || "", format: r.format || "post" }));
+  render();
+}
+function parseImages(raw){
+  if(!raw) return [];
+  try{ const parsed = JSON.parse(raw); return Array.isArray(parsed) ? parsed : [raw]; }
+  catch(e){ return [raw]; }
+}
+async function saveItem(it){
+  const { error } = await sb.from("content_pieces_climb").upsert(it, { onConflict: "id" });
+  if(error){ console.error(error); alert("No se pudo guardar. Intenta de nuevo."); }
+}
+async function deleteItem(id){
+  const { error } = await sb.from("content_pieces_climb").delete().eq("id", id);
+  if(error){ console.error(error); alert("No se pudo eliminar. Intenta de nuevo."); }
+}
+
+function compressImage(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 900;
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width*scale;
+        canvas.height = img.height*scale;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById("fImage").addEventListener("change", async (e)=>{
+  const files = Array.from(e.target.files);
+  if(!files.length) return;
+  const spaceLeft = 4 - pendingImages.length;
+  if(spaceLeft <= 0){ alert("Ya tienes el máximo de 4 imágenes. Quita alguna para agregar otra."); e.target.value=""; return; }
+  const toProcess = files.slice(0, spaceLeft);
+  for(const file of toProcess){
+    try{ pendingImages.push(await compressImage(file)); }catch(err){}
+  }
+  e.target.value = "";
+  renderImgPreviews();
+});
+function renderImgPreviews(){
+  const wrap = document.getElementById("imgPreviewWrap");
+  const grid = document.getElementById("imgPreviewGrid");
+  if(!pendingImages.length){ wrap.style.display="none"; grid.innerHTML=""; return; }
+  wrap.style.display = "block";
+  grid.innerHTML = pendingImages.map((img,i)=>`
+    <div style="position:relative;">
+      <img src="${img}" style="width:74px;height:74px;object-fit:cover;border-radius:8px;display:block;">
+      <button type="button" data-rm="${i}" style="position:absolute;top:-6px;right:-6px;background:rgba(36,28,58,.85);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;line-height:1;">✕</button>
+    </div>
+  `).join("");
+  grid.querySelectorAll("[data-rm]").forEach(b=>{
+    b.addEventListener("click", ()=>{ pendingImages.splice(parseInt(b.dataset.rm),1); renderImgPreviews(); });
+  });
+}
+
+function snapshotForm(){
+  return JSON.stringify({
+    title: document.getElementById("fTitle").value,
+    detail: document.getElementById("fDetail").value,
+    pillar: document.getElementById("fPillar").value,
+    format: document.getElementById("fFormat").value,
+    insp: document.getElementById("fInsp").value,
+    date: document.getElementById("fDate").value,
+    status: document.getElementById("fStatus").value,
+    images: pendingImages
+  });
+}
+
+function openModal(existing){
+  document.querySelector("#modal h2").textContent = existing ? "Editar idea" : "Nueva idea de contenido";
+  document.getElementById("editId").value = existing ? existing.id : "";
+  document.getElementById("fTitle").value = existing ? existing.title : "";
+  document.getElementById("fDetail").value = existing ? existing.detail : "";
+  document.getElementById("fPillar").value = existing ? existing.pillar : "";
+  document.getElementById("fFormat").value = existing ? existing.format : "post";
+  document.getElementById("fInsp").value = existing ? existing.insp : "";
+  document.getElementById("fDate").value = existing ? existing.date : defaultDateForNewPiece();
+  document.getElementById("fStatus").value = existing ? existing.status : "idea";
+  document.getElementById("fImage").value = "";
+  pendingImages = existing && existing.images ? existing.images.slice() : [];
+  renderImgPreviews();
+  formSnapshot = snapshotForm();
+  document.getElementById("overlay").style.display = "flex";
+}
+function closeModal(){ document.getElementById("overlay").style.display = "none"; }
+function hasUnsavedContent(){ return snapshotForm() !== formSnapshot; }
+function attemptClose(){
+  if(hasUnsavedContent()){
+    if(confirm("Tienes cambios sin guardar. ¿Seguro que quieres salir? Se perderá lo escrito.")) closeModal();
+  } else { closeModal(); }
+}
+function defaultDateForNewPiece(){
+  const today = new Date();
+  let base = (cursor.getFullYear()===today.getFullYear() && cursor.getMonth()===today.getMonth()) ? today : new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+  const y = base.getFullYear(), m = String(base.getMonth()+1).padStart(2,"0"), d = String(base.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+document.getElementById("btnNew").addEventListener("click", ()=>openModal(null));
+document.getElementById("btnCancel").addEventListener("click", ()=>attemptClose());
+document.getElementById("btnCloseX").addEventListener("click", ()=>attemptClose());
+
+document.getElementById("btnSave").addEventListener("click", async (e)=>{
+  const btn = e.currentTarget;
+  if(btn.disabled) return;
+  const title = document.getElementById("fTitle").value.trim();
+  if(!title){ alert("Escribe un título para la idea."); return; }
+  btn.disabled = true; btn.style.opacity = "0.6"; btn.style.cursor = "not-allowed";
+  try{
+    const id = document.getElementById("editId").value || ("id"+Date.now());
+    const it = {
+      id, title, pillar: document.getElementById("fPillar").value,
+      insp: document.getElementById("fInsp").value.trim(),
+      idea_detail: document.getElementById("fDetail").value.trim(),
+      format: document.getElementById("fFormat").value,
+      date: document.getElementById("fDate").value.trim(),
+      status: document.getElementById("fStatus").value,
+      image_data: pendingImages.length ? JSON.stringify(pendingImages) : null
+    };
+    await saveItem(it);
+    closeModal();
+    await loadItems();
+  } finally {
+    btn.disabled = false; btn.style.opacity = ""; btn.style.cursor = "";
+  }
+});
+
+document.getElementById("filterStatus").addEventListener("change", render);
+document.querySelectorAll(".viewtab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    document.querySelectorAll(".viewtab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    currentView = t.dataset.view;
+    document.getElementById("monthNav").style.display = currentView==="calendar" ? "flex":"none";
+    document.getElementById("calLegend").style.display = currentView==="calendar" ? "flex":"none";
+    document.getElementById("calHead").style.display = currentView==="calendar" ? "grid":"none";
+    document.getElementById("calGrid").style.display = currentView==="calendar" ? "grid":"none";
+    document.getElementById("board").style.display = currentView==="board" ? "flex":"none";
+    render();
+  });
+});
+document.getElementById("prevMonth").addEventListener("click", ()=>{ cursor.setMonth(cursor.getMonth()-1); render(); });
+document.getElementById("nextMonth").addEventListener("click", ()=>{ cursor.setMonth(cursor.getMonth()+1); render(); });
+
+function filtered(){
+  const st = document.getElementById("filterStatus").value;
+  return items.filter(it => !st || it.status===st);
+}
+function renderCalendarHead(){
+  const days=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+  document.getElementById("calHead").innerHTML = days.map(d=>`<div>${d}</div>`).join("");
+}
+document.getElementById("lightbox").addEventListener("click", ()=>{ document.getElementById("lightbox").style.display="none"; });
+
+function render(){
+  renderCalendarHead();
+  const list = filtered();
+  document.getElementById("emptyState").style.display = items.length===0 ? "block" : "none";
+
+  const monthNames=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  document.getElementById("monthLabel").textContent = monthNames[cursor.getMonth()]+" "+cursor.getFullYear();
+
+  const grid = document.getElementById("calGrid");
+  grid.innerHTML="";
+  const year=cursor.getFullYear(), month=cursor.getMonth();
+  const firstDow = new Date(year,month,1).getDay();
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  for(let i=0;i<firstDow;i++){ grid.insertAdjacentHTML("beforeend", `<div class="day empty"></div>`); }
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = year+"-"+String(month+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+    const dayItems = list.filter(it=>it.date===dateStr);
+    const cell = document.createElement("div");
+    cell.className="day";
+    cell.dataset.date = dateStr;
+    cell.innerHTML = `<div class="daynum">${d}</div>` + dayItems.map(it=>{
+      const hasImg = it.images && it.images.length;
+      return `<div class="piece${hasImg ? " has-img" : ""}" draggable="true" data-id="${it.id}"><span class="status-dot cs-${it.client_status}">${it.client_status==="aprobado"?"✓":it.client_status==="cambios"?"✎":"◔"}</span><span class="format-pill"><span class="ficon">${formatIcon(it.format)}</span><span>${formatLabelShort(it.format)}</span></span>${hasImg ? `<img class="thumb" src="${it.images[0]}">` : ""}${hasImg && it.images.length>1 ? `<span class="imgcount">+${it.images.length-1}</span>` : ""}<span class="txt">${it.title}</span></div>`;
+    }).join("");
+    grid.appendChild(cell);
+  }
+  grid.querySelectorAll(".piece").forEach(p=>{
+    p.addEventListener("click", ()=>{ const it = items.find(x=>x.id===p.dataset.id); if(it) openModal(it); });
+    p.addEventListener("dragstart", e=>{ p.classList.add("dragging"); e.dataTransfer.setData("text/plain", p.dataset.id); e.dataTransfer.effectAllowed = "move"; });
+    p.addEventListener("dragend", ()=> p.classList.remove("dragging"));
+  });
+  grid.querySelectorAll(".day:not(.empty)").forEach(cell=>{
+    cell.addEventListener("dragover", e=>{ e.preventDefault(); cell.classList.add("dragover"); });
+    cell.addEventListener("dragleave", ()=> cell.classList.remove("dragover"));
+    cell.addEventListener("drop", async e=>{
+      e.preventDefault(); cell.classList.remove("dragover");
+      const id = e.dataTransfer.getData("text/plain");
+      const it = items.find(x=>x.id===id);
+      if(!it || it.date === cell.dataset.date) return;
+      it.date = cell.dataset.date;
+      await saveItem({ id: it.id, title: it.title, pillar: it.pillar, insp: it.insp, date: it.date, status: it.status, image_data: it.images.length ? JSON.stringify(it.images) : null, client_status: it.client_status, client_comment: it.client_comment, idea_detail: it.detail, format: it.format });
+      loadItems();
+    });
+  });
+
+  const board = document.getElementById("board");
+  board.innerHTML = list.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||"")).map(it=>`
+    <div class="card cs-${it.client_status}">
+      <div class="cardtop">
+        <div>
+          <p class="ctitle">${it.title}</p>
+          ${it.detail ? `<p style="font-size:13px;color:var(--sub);font-weight:300;margin:0 0 6px;line-height:1.5;">${it.detail}</p>` : ""}
+          <div class="meta">
+            <span class="tag pillar">${it.pillar}</span>
+            <span class="tag format"><span class="ficon">${formatIcon(it.format)}</span>${formatLabel(it.format)}</span>
+            ${it.date ? `<span class="tag date">${it.date}</span>` : ""}
+          </div>
+        </div>
+        <span class="status ${it.status}">${statusLabel(it.status)}</span>
+      </div>
+      ${it.insp ? `<div class="insp"><span>💡</span><span>${linkify(it.insp)}</span></div>` : ""}
+      ${it.images && it.images.length ? `
+        <img class="cardimg" src="${it.images[0]}" data-mainimg="${it.id}">
+        ${it.images.length>1 ? `<div class="gallery-strip" data-strip="${it.id}">${it.images.map((img,i)=>`<img src="${img}" class="${i===0?'active':''}" data-idx="${i}">`).join("")}</div>` : ""}
+      ` : ""}
+      <div class="review-panel">
+        <p class="review-label">Revisión de cliente</p>
+        <div class="review-btns">
+          <button class="rbtn approved${it.client_status==="aprobado"?" active":""}" data-review="${it.id}" data-value="aprobado"><span class="ricon">✓</span>Aprobado</button>
+          <button class="rbtn changes${it.client_status==="cambios"?" active":""}" data-review="${it.id}" data-value="cambios"><span class="ricon">✎</span>Tiene cambios</button>
+          <button class="rbtn pending${it.client_status==="pendiente"?" active":""}" data-review="${it.id}" data-value="pendiente"><span class="ricon">◔</span>Pendiente</button>
+        </div>
+        <textarea class="review-comment" data-comment="${it.id}" placeholder="Comentarios del cliente (opcional)...">${it.client_comment}</textarea>
+        <button class="review-savebtn" data-savecomment="${it.id}">Guardar comentario</button>
+        <span class="comment-saved-note" data-savednote="${it.id}">Guardado ✓</span>
+      </div>
+      <div class="rowbtns">
+        <button class="smallbtn" data-edit="${it.id}">Editar</button>
+        <button class="smallbtn del" data-del="${it.id}">Eliminar</button>
+      </div>
+    </div>
+  `).join("");
+
+  board.querySelectorAll("[data-mainimg]").forEach(img=>{
+    img.addEventListener("click", (e)=>{ e.stopPropagation(); document.getElementById("lightboxImg").src = img.src; document.getElementById("lightbox").style.display = "flex"; });
+  });
+  board.querySelectorAll("[data-strip]").forEach(strip=>{
+    strip.querySelectorAll("img").forEach(thumb=>{
+      thumb.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const id = strip.dataset.strip;
+        const mainImg = board.querySelector(`[data-mainimg="${id}"]`);
+        mainImg.src = thumb.src;
+        strip.querySelectorAll("img").forEach(t=>t.classList.remove("active"));
+        thumb.classList.add("active");
+      });
+    });
+  });
+  board.querySelectorAll("[data-review]").forEach(b=>{
+    b.addEventListener("click", async ()=>{
+      const it = items.find(x=>x.id===b.dataset.review);
+      if(!it) return;
+      it.client_status = b.dataset.value;
+      await saveItem({ id: it.id, title: it.title, pillar: it.pillar, insp: it.insp, date: it.date, status: it.status, image_data: it.images.length ? JSON.stringify(it.images) : null, client_status: it.client_status, client_comment: it.client_comment, idea_detail: it.detail, format: it.format });
+      loadItems();
+    });
+  });
+  board.querySelectorAll("[data-savecomment]").forEach(b=>{
+    b.addEventListener("click", async ()=>{
+      const id = b.dataset.savecomment;
+      const it = items.find(x=>x.id===id);
+      if(!it) return;
+      const textarea = board.querySelector(`[data-comment="${id}"]`);
+      it.client_comment = textarea.value.trim();
+      await saveItem({ id: it.id, title: it.title, pillar: it.pillar, insp: it.insp, date: it.date, status: it.status, image_data: it.images.length ? JSON.stringify(it.images) : null, client_status: it.client_status, client_comment: it.client_comment, idea_detail: it.detail, format: it.format });
+      const note = board.querySelector(`[data-savednote="${id}"]`);
+      note.style.display = "inline";
+      setTimeout(()=>{ note.style.display = "none"; }, 2000);
+    });
+  });
+  board.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{
+    const it = items.find(x=>x.id===b.dataset.edit); if(it) openModal(it);
+  }));
+  board.querySelectorAll("[data-del]").forEach(b=>{
+    let confirming = false; let resetTimer = null;
+    b.addEventListener("click", async ()=>{
+      if(!confirming){
+        confirming = true;
+        b.textContent = "¿Seguro? Confirmar";
+        b.style.background = "#FBEAEA"; b.style.borderColor = "#E4A0A0";
+        resetTimer = setTimeout(()=>{ confirming = false; b.textContent = "Eliminar"; b.style.background = ""; b.style.borderColor = ""; }, 3000);
+        return;
+      }
+      clearTimeout(resetTimer);
+      b.disabled = true; b.textContent = "Eliminando...";
+      await deleteItem(b.dataset.del);
+      await loadItems();
+    });
+  });
+}
+
+document.getElementById("monthNav").style.display = "flex";
+loadItems();
+</script>
+</body>
+</html>
