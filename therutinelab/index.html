@@ -238,6 +238,67 @@
   .err-detail { font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
 
   .fineprint { font-size: 11px; color: var(--ink-soft); margin-top: 16px; line-height: 1.5; }
+
+  /* ---- Plan como tarjetas ---- */
+  .plan-card.bare { background: transparent; border: 0; box-shadow: none; padding: 0; overflow: visible; }
+  .pcards { display: grid; gap: 12px; }
+  .pc { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 15px; font-size: 13px; }
+  .pc.ag { box-shadow: 4px 4px 0 var(--green); }
+  .pc.ab { box-shadow: 4px 4px 0 var(--blue); }
+  .pc.ao { box-shadow: 4px 4px 0 var(--orange); }
+  .pc h4 {
+    font-family: "Archivo Black", "Arial Black", sans-serif;
+    font-size: 12.5px; text-transform: uppercase;
+    margin: 0 0 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .pc p { margin: 6px 0 0; }
+  .stat { display: flex; align-items: baseline; gap: 7px; }
+  .stat b { font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat span { font: 700 11px "Courier Prime", monospace; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+  details.day { background: var(--card); border: 2px solid var(--line); border-radius: 14px; }
+  details.day summary {
+    list-style: none; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 14px;
+    font-family: "Archivo Black", "Arial Black", sans-serif;
+    font-size: 12.5px; text-transform: uppercase;
+  }
+  details.day summary::-webkit-details-marker { display: none; }
+  details.day summary .caret { transition: transform 0.15s; }
+  details.day[open] summary { border-bottom: 2px dashed var(--line-soft); }
+  details.day[open] summary .caret { transform: rotate(180deg); }
+  .day-body { padding: 4px 14px 10px; }
+  .meal { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-bottom: 1.5px dashed var(--line-soft); font-size: 12.5px; }
+  .meal:last-child { border-bottom: 0; }
+  .meal .mn { flex: 0 0 72px; font: 700 10.5px "Courier Prime", monospace; text-transform: uppercase; color: var(--ink-soft); }
+  .meal .md { flex: 1; }
+  .kcal { flex: 0 0 auto; font: 700 10.5px "Courier Prime", monospace; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px 8px; background: var(--green-soft); white-space: nowrap; }
+  .price-chip { font: 700 10.5px "Courier Prime", monospace; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px 8px; background: var(--orange-soft); white-space: nowrap; }
+  .aisle-item { display: flex; gap: 9px; align-items: center; padding: 5px 0; font-size: 12.5px; cursor: pointer; }
+  .aisle-item input { width: 17px; height: 17px; accent-color: var(--ink); flex: 0 0 auto; }
+  .aisle-item .ai-q { font: 700 11px "Courier Prime", monospace; color: var(--ink-soft); flex: 0 0 auto; }
+  .aisle-item.done .ai-t, .aisle-item.done .ai-q { text-decoration: line-through; opacity: 0.45; }
+  .total-row { display: flex; gap: 10px; }
+  .total-box { flex: 1; text-align: center; border: 2px solid var(--line); border-radius: 12px; padding: 10px 8px; }
+  .total-box.tg { background: var(--green-soft); }
+  .total-box.to { background: var(--orange-soft); }
+  .total-box b { font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 19px; display: block; }
+  .total-box span { font: 700 10px "Courier Prime", monospace; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+  .exr { display: flex; gap: 10px; padding: 6px 0; font-size: 12.5px; align-items: baseline; border-bottom: 1.5px dashed var(--line-soft); }
+  .exr:last-child { border-bottom: 0; }
+  .exr .exd { flex: 0 0 44px; font: 700 10.5px "Courier Prime", monospace; text-transform: uppercase; color: var(--ink-soft); }
+  .skel { height: 86px; border-radius: 16px; border: 2px dashed var(--line-soft); animation: pulse 1s infinite alternate; }
+  .pfull { grid-column: 1 / -1; }
+
+  /* ---- Vista de computadora / tablet (responsivo) ---- */
+  @media (min-width: 900px) {
+    .app { max-width: 960px; }
+    .step { max-width: 560px; margin: 0 auto; }
+    #s8 { max-width: 960px; }
+    #s8 .pcards { grid-template-columns: 1fr 1fr; align-items: start; }
+    #s8 .nav, #s8 .adjust { max-width: 560px; margin-left: auto; margin-right: auto; }
+    #s8 .adjust { margin-top: 12px; }
+  }
 </style>
 </head>
 <body>
@@ -630,15 +691,19 @@
       p.push('REGLAS INFANTILES OBLIGATORIAS: adapta porciones infantiles del mismo menú familiar. Bebé menor de 12 meses: nada de miel; texturas seguras para su edad; nada de frutos secos enteros ni riesgo de atragantamiento. Menores de 2 años: sin azúcar añadida ni sal añadida. Nota breve: confirmar la alimentación del bebé con su pediatra.');
       p.push('');
     }
-    p.push('ENTREGA (usa exactamente estas secciones, encabezados con "## "):');
-    p.push('## Tu resumen — 3 líneas: su plan y su meta calórica diaria estimada.');
-    p.push('## Menú de la semana — 7 días, desayuno/almuerzo/cena/snack en una línea por comida con kcal aproximadas. Platos típicos y realistas de su país.');
-    if (baby || kids) p.push('## Para los pequeños — cómo adaptar el menú a los niños/bebé según su edad.');
-    p.push('## Tu lista del súper — por pasillos, cantidades para todo el hogar, precio estimado por grupo en moneda local pensando en ' + marketTxt + '. Cierra con total estimado vs presupuesto.');
-    if (wantsEx) p.push('## Tu semana de movimiento — rutina semanal realista para su nivel, horario, equipo y condiciones.');
-    p.push('## Tu primer paso — una sola acción concreta para hoy.');
+    p.push('FORMATO DE SALIDA — OBLIGATORIO: responde SOLO con líneas JSON válidas (NDJSON), UNA por línea. Nada de markdown, nada de texto fuera de los objetos JSON. Emite las líneas en este orden exacto:');
+    p.push('{"t":"resumen","meta_kcal":1800,"texto":"2-3 frases directas sobre su plan"}');
+    p.push('{"t":"dia","dia":"Lunes","comidas":[{"n":"Desayuno","p":"platillo típico de su país","kcal":320},{"n":"Almuerzo","p":"...","kcal":450},{"n":"Cena","p":"...","kcal":400},{"n":"Snack","p":"...","kcal":150}]}');
+    p.push('(7 líneas "dia": Lunes a Domingo, variadas, dentro de la meta calórica)');
+    if (baby || kids) p.push('{"t":"peques","texto":"cómo adaptar el menú a los niños/bebé según su edad, respetando las reglas infantiles"}');
+    p.push('{"t":"pasillo","nombre":"Frutas y verduras","precio":"$12","items":[{"q":"2 lb","n":"tomate"},{"q":"1 ud","n":"lechuga"}]}');
+    p.push('(una línea "pasillo" por cada pasillo del súper: frutas/verduras, carnes/pescados, lácteos/huevo, abarrotes, congelados según aplique; cantidades para todo el hogar y para su frecuencia de compra; precios estimados en moneda local pensando en ' + marketTxt + ')');
+    p.push('{"t":"total","total":"$85","presupuesto":"su presupuesto","nota":"1 frase comparando"}');
+    if (wantsEx) p.push('{"t":"ejercicio","dias":[{"dia":"Lun","act":"Caminata 30 min"},{"dia":"Mar","act":"..."}]}');
+    p.push('{"t":"paso","texto":"UNA sola acción concreta para hoy"}');
+    p.push('{"t":"aviso","texto":"una línea recordando que esto no sustituye consejo médico"}');
     p.push('');
-    p.push('Formato: solo encabezados "## ", listas con "- " y negritas "**". Sin tablas. Máximo ~700 palabras. Si las indicaciones médicas contradicen algo, gana el médico. Cierra recordando en una línea que esto no sustituye consejo médico.');
+    p.push('kcal siempre como número. Si las indicaciones médicas contradicen algo, gana el médico.');
     return p.join('\n');
   }
 
@@ -665,6 +730,72 @@
     });
     if (inList) html += '</ul>';
     el.innerHTML = html;
+  }
+
+  /* ---- Render del plan como tarjetas (NDJSON) ---- */
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderCards(objs, el, loading) {
+    var h = '<div class="pcards">';
+    var firstDay = true;
+    objs.forEach(function (o) {
+      if (o.t === 'resumen') {
+        h += '<div class="pc ag pfull"><h4>🥗 Tu resumen</h4>'
+          + (o.meta_kcal ? '<div class="stat"><b>' + esc(o.meta_kcal) + '</b><span>kcal / día</span></div>' : '')
+          + '<p>' + esc(o.texto) + '</p></div>';
+      } else if (o.t === 'dia') {
+        h += '<details class="day"' + (firstDay ? ' open' : '') + '><summary>' + esc(o.dia) + '<span class="caret">▾</span></summary><div class="day-body">'
+          + (o.comidas || []).map(function (m) {
+              return '<div class="meal"><span class="mn">' + esc(m.n) + '</span><span class="md">' + esc(m.p) + '</span>'
+                + (m.kcal ? '<span class="kcal">' + esc(m.kcal) + '</span>' : '') + '</div>';
+            }).join('')
+          + '</div></details>';
+        firstDay = false;
+      } else if (o.t === 'peques') {
+        h += '<div class="pc ab"><h4>👶 Para los pequeños</h4><p>' + esc(o.texto) + '</p></div>';
+      } else if (o.t === 'pasillo') {
+        h += '<div class="pc"><h4>🛒 ' + esc(o.nombre) + (o.precio ? '<span class="price-chip">' + esc(o.precio) + '</span>' : '') + '</h4>'
+          + (o.items || []).map(function (it) {
+              return '<label class="aisle-item"><input type="checkbox"><span class="ai-q">' + esc(it.q) + '</span><span class="ai-t">' + esc(it.n) + '</span></label>';
+            }).join('')
+          + '</div>';
+      } else if (o.t === 'total') {
+        h += '<div class="pc ao pfull"><h4>💰 Tu súper vs tu presupuesto</h4><div class="total-row">'
+          + '<div class="total-box to"><b>' + esc(o.total) + '</b><span>Total estimado</span></div>'
+          + '<div class="total-box tg"><b>' + esc(o.presupuesto) + '</b><span>Tu presupuesto</span></div>'
+          + '</div>' + (o.nota ? '<p>' + esc(o.nota) + '</p>' : '') + '</div>';
+      } else if (o.t === 'ejercicio') {
+        h += '<div class="pc ab"><h4>🏋️ Tu semana de movimiento</h4>'
+          + (o.dias || []).map(function (d) {
+              return '<div class="exr"><span class="exd">' + esc(d.dia) + '</span><span>' + esc(d.act) + '</span></div>';
+            }).join('')
+          + '</div>';
+      } else if (o.t === 'paso') {
+        h += '<div class="pc ag pfull"><h4>⚡ Tu primer paso</h4><p style="font-weight:700">' + esc(o.texto) + '</p></div>';
+      } else if (o.t === 'aviso') {
+        h += '<div class="pfull" style="font-size:11px;color:var(--ink-soft)">' + esc(o.texto) + '</div>';
+      }
+    });
+    if (loading) h += '<div class="skel"></div>';
+    h += '</div>';
+    el.innerHTML = h;
+    el.querySelectorAll('.aisle-item input').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        cb.closest('.aisle-item').classList.toggle('done', cb.checked);
+      });
+    });
+  }
+
+  function parsePlanLines(text) {
+    var objs = [];
+    text.split('\n').forEach(function (ln) {
+      ln = ln.trim();
+      if (!ln || ln[0] !== '{') return;
+      try { objs.push(JSON.parse(ln)); } catch (e) { /* línea incompleta o inválida */ }
+    });
+    return objs;
   }
 
   /* ---- Generación ---- */
@@ -722,6 +853,7 @@
         setWaiting(false); generating = false; return;
       }
 
+      document.getElementById('planCard').classList.add('bare');
       var reader = res.body.getReader();
       var dec = new TextDecoder();
       var text = '';
@@ -729,8 +861,8 @@
         var chunk = await reader.read();
         if (chunk.done) break;
         text += dec.decode(chunk.value, { stream: true });
-        setWaiting(true, 'Escribiendo…');
-        renderMd(text, out);
+        setWaiting(true, 'Escribiendo tu plan…');
+        renderCards(parsePlanLines(text), out, true);
       }
       text += dec.decode();
 
@@ -739,7 +871,14 @@
         if (text.indexOf(m) !== -1) { marker = m; text = text.replace(m, '').trim(); }
       });
       lastPlan = marker === '[[refused]]' ? '' : text;
-      renderMd(lastPlan, out);
+      var objs = parsePlanLines(lastPlan);
+      if (objs.length > 0) {
+        renderCards(objs, out, false);
+      } else if (lastPlan) {
+        renderMd(lastPlan, out); // respaldo por si la IA no respetó el formato
+      } else {
+        out.innerHTML = '';
+      }
       if (marker) {
         out.innerHTML += '<p><strong>' + MARKER_COPY[marker] + '</strong></p>';
       } else {
@@ -765,7 +904,7 @@
     generate([
       { role: 'user', content: lastProfile },
       { role: 'assistant', content: lastPlan },
-      { role: 'user', content: 'Ajusta el plan: ' + adj + '. Devuelve el plan COMPLETO actualizado con el mismo formato y secciones.' }
+      { role: 'user', content: 'Ajusta el plan: ' + adj + '. Devuelve el plan COMPLETO actualizado, en el MISMO formato NDJSON (solo líneas JSON, mismas claves y orden).' }
     ]);
   });
 
