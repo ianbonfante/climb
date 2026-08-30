@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TheRutineLab — Tu experto personal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+  :root {
+    --bg: #F4F2EE;
+    --card: #FFFFFF;
+    --ink: #111111;
+    --ink-soft: #6B6659;
+    --line: #111111;
+    --line-soft: #E3DFD5;
+    --blue: #8DA4FF;
+    --green: #CDE431;
+    --orange: #FF7D31;
+    --blue-soft: #E4EAFF;
+    --green-soft: #F2F8CF;
+    --orange-soft: #FFE7D6;
+    --btn-ink: #F4F2EE;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171613;
+      --card: #211F1A;
+      --ink: #F2EFE8;
+      --ink-soft: #A5A08F;
+      --line: #F2EFE8;
+      --line-soft: #3A372E;
+      --blue-soft: #232A45;
+      --green-soft: #2E331A;
+      --orange-soft: #3E2716;
+      --btn-ink: #111111;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Courier Prime", "Courier New", monospace;
+    font-size: 15.5px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  .app { max-width: 480px; margin: 0 auto; padding: 20px 18px 64px; }
+
+  .brand { display: flex; align-items: center; justify-content: space-between; padding: 4px 2px 16px; }
+  .brand .logo { font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 15px; letter-spacing: 0.02em; }
+  .brand .step-count { font: 700 12px "Courier Prime", monospace; color: var(--ink-soft); }
+
+  .progress { display: flex; gap: 6px; margin-bottom: 26px; }
+  .progress i { flex: 1; height: 6px; border-radius: 99px; background: var(--line-soft); }
+  .progress i.done { background: var(--green); border: 1.5px solid var(--line); }
+
+  .step h1 {
+    font-family: "Archivo Black", "Arial Black", sans-serif;
+    font-size: clamp(24px, 6.5vw, 30px);
+    line-height: 1.08;
+    text-transform: uppercase;
+    letter-spacing: 0.005em;
+    margin: 0 0 8px;
+    text-wrap: balance;
+  }
+  .step h1 mark { background: var(--step-soft, var(--green-soft)); color: var(--ink); padding: 0 4px; }
+  .step .hint { color: var(--ink-soft); font-size: 14px; margin: 0 0 22px; }
+
+  #s1 { --step-a: var(--blue); --step-soft: var(--blue-soft); }
+  #s2 { --step-a: var(--green); --step-soft: var(--green-soft); }
+  #s3 { --step-a: var(--orange); --step-soft: var(--orange-soft); }
+  #s4 { --step-a: var(--blue); --step-soft: var(--blue-soft); }
+  #s5 { --step-a: var(--green); --step-soft: var(--green-soft); }
+  #s6 { --step-a: var(--orange); --step-soft: var(--orange-soft); }
+  #s7 { --step-a: var(--blue); --step-soft: var(--blue-soft); }
+  #s8 { --step-a: var(--green); --step-soft: var(--green-soft); }
+
+  .field { margin-bottom: 18px; }
+  .field > label {
+    display: block;
+    font: 700 12px "Courier Prime", monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 7px;
+  }
+  .field > label::before { content: "// "; color: var(--step-a, var(--green)); }
+  .field .sub { font-size: 12.5px; color: var(--ink-soft); margin: 5px 0 0; }
+  input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    color: var(--ink);
+    font: 700 15px "Courier Prime", monospace;
+    padding: 12px 13px;
+  }
+  input:focus-visible, textarea:focus-visible { outline: 3px solid var(--step-a, var(--green)); outline-offset: 1px; }
+  ::placeholder { color: var(--ink-soft); opacity: 0.65; font-weight: 400; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink);
+    font: 700 13.5px "Courier Prime", monospace;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  .chip.on {
+    background: var(--step-a, var(--green));
+    color: #111111;
+    box-shadow: 2.5px 2.5px 0 var(--line);
+  }
+  .chip:focus-visible { outline: 3px solid var(--step-a, var(--green)); outline-offset: 2px; }
+
+  .note {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: var(--step-soft, var(--green-soft));
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin-top: 2px;
+  }
+
+  .nav { display: flex; gap: 10px; margin-top: 26px; }
+  .btn {
+    flex: 1;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    font: 700 15px "Courier Prime", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+  .btn.primary {
+    background: var(--ink);
+    color: var(--btn-ink);
+    box-shadow: 4px 4px 0 var(--step-a, var(--green));
+  }
+  .btn.primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--step-a, var(--green)); }
+  .btn.primary:disabled { opacity: 0.5; cursor: default; }
+  .btn.ghost { flex: 0 0 auto; background: var(--card); color: var(--ink); }
+  .btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  .hero-tags { display: flex; gap: 8px; margin: 0 0 18px; }
+  .sticker {
+    display: inline-block;
+    font: 700 11px "Courier Prime", monospace;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: var(--card);
+  }
+  .sticker.b { background: var(--blue); color: #111; transform: rotate(-2deg); }
+  .sticker.g { background: var(--green); color: #111; transform: rotate(1.5deg); }
+  .sticker.o { background: var(--orange); color: #111; transform: rotate(-1deg); }
+
+  .modules { display: grid; gap: 10px; }
+  .mod {
+    display: flex; align-items: center; gap: 13px;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 15px;
+    text-align: left;
+    font: inherit; color: inherit; cursor: pointer;
+  }
+  .mod.active { box-shadow: 4px 4px 0 var(--green); }
+  .mod .ico {
+    flex: 0 0 44px; height: 44px; border-radius: 12px;
+    display: grid; place-items: center;
+    border: 2px solid var(--line);
+    font-size: 21px;
+  }
+  .mod h3 { margin: 0; font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 14.5px; text-transform: uppercase; }
+  .mod p { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+  .mod.soon { opacity: 0.5; cursor: default; }
+  .mod .soon-tag { margin-left: auto; font: 700 10px "Courier Prime", monospace; letter-spacing: 0.08em; border: 2px solid var(--line); border-radius: 999px; padding: 3px 8px; background: var(--orange); color: #111; white-space: nowrap; }
+  .mod .go { margin-left: auto; font-family: "Archivo Black", sans-serif; font-size: 16px; }
+
+  .plan-card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 5px 5px 0 var(--step-a, var(--green));
+    margin-bottom: 14px;
+    font-size: 13.5px;
+    overflow-x: auto;
+  }
+  .plan-card h3 {
+    font-family: "Archivo Black", "Arial Black", sans-serif;
+    font-size: 14px; text-transform: uppercase;
+    margin: 18px 0 8px;
+  }
+  .plan-card h3:first-child { margin-top: 0; }
+  .plan-card h3::after { content: ""; display: block; width: 44px; height: 4px; margin-top: 4px; background: var(--step-a, var(--green)); }
+  .plan-card ul { margin: 6px 0; padding-left: 18px; display: grid; gap: 4px; }
+  .plan-card p { margin: 8px 0; }
+  .thinking { display: flex; align-items: center; gap: 10px; color: var(--ink-soft); font-size: 13.5px; padding: 6px 0; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); border: 2px solid var(--line); animation: pulse 1s infinite alternate; }
+  @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+
+  .adjust { display: flex; gap: 8px; margin-top: 12px; }
+  .adjust input { flex: 1; }
+  .adjust .btn { flex: 0 0 auto; padding: 12px 14px; }
+
+  .upl {
+    width: 100%;
+    background: var(--card);
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+    color: var(--ink);
+    font: 700 13.5px "Courier Prime", monospace;
+    padding: 13px;
+    cursor: pointer;
+  }
+  .upl:focus-visible { outline: 3px solid var(--step-a, var(--green)); outline-offset: 2px; }
+  .upl-prev { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .upl-prev img {
+    height: 74px; width: 74px; object-fit: cover;
+    border: 2px solid var(--line); border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--step-a, var(--green));
+  }
+  .upl-x {
+    background: var(--card); border: 2px solid var(--line); border-radius: 999px;
+    font: 700 12px "Courier Prime", monospace; padding: 6px 12px; cursor: pointer; color: var(--ink);
+  }
+  .err-detail { font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+
+  .fineprint { font-size: 11px; color: var(--ink-soft); margin-top: 16px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <div class="logo">THE<span style="color:var(--orange)">RUTINE</span>LAB</div>
+    <div class="step-count" id="stepCount"></div>
+  </div>
+  <div class="progress" id="progress"></div>
+
+  <!-- 0 · Bienvenida -->
+  <section class="step" id="s0">
+    <div class="hero-tags"><span class="sticker g">100% fresh</span><span class="sticker b">A tu ritmo</span><span class="sticker o">Cero culpa</span></div>
+    <h1>Diseña tu propia especie de rutina.</h1>
+    <p class="hint">Unas preguntas → tu plan hecho para ti, tu familia, tu súper y tu presupuesto.</p>
+    <div class="modules">
+      <button class="mod active" type="button" data-next>
+        <div class="ico" style="background:var(--green-soft)">🥗</div>
+        <div><h3>Nutrición</h3><p>Menú + calorías + tu súper</p></div>
+        <div class="go">→</div>
+      </button>
+      <div class="mod soon"><div class="ico" style="background:var(--blue-soft)">🏋️</div><div><h3>Entrenador</h3><p>Con el equipo que ya tienes</p></div><div class="soon-tag">Pronto</div></div>
+      <div class="mod soon"><div class="ico" style="background:var(--orange-soft)">💰</div><div><h3>Finanzas</h3><p>Tu dinero en orden</p></div><div class="soon-tag">Pronto</div></div>
+      <div class="mod soon"><div class="ico" style="background:var(--blue-soft)">😴</div><div><h3>Sueño</h3><p>Descansa de verdad</p></div><div class="soon-tag">Pronto</div></div>
+    </div>
+  </section>
+
+  <!-- 1 · Sobre ti -->
+  <section class="step" id="s1" hidden>
+    <h1>Hola, <mark>tú</mark>.</h1>
+    <p class="hint">Tu plan habla contigo, no con un usuario genérico.</p>
+    <div class="field"><label for="fName">Nombre</label><input type="text" id="fName" placeholder="Roberto" autocomplete="off"></div>
+    <div class="field"><label for="fAge">Edad</label><input type="number" id="fAge" placeholder="60" min="14" max="110"></div>
+    <div class="field"><label>Sexo</label>
+      <div class="chips" data-field="sex"><button class="chip" type="button">Hombre</button><button class="chip" type="button">Mujer</button><button class="chip" type="button">Prefiero no decir</button></div>
+    </div>
+    <div class="field"><label for="fCountry">País y ciudad</label><input type="text" id="fCountry" placeholder="Panamá, Ciudad de Panamá" autocomplete="off">
+      <p class="sub" id="countryHint" hidden>✓ Detectado — corrígelo si no es.</p>
+    </div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
+  </section>
+
+  <!-- 2 · Objetivo -->
+  <section class="step" id="s2" hidden>
+    <h1>¿Qué vamos a <mark>lograr</mark>?</h1>
+    <p class="hint">Hasta 3. Tu plan las balancea.</p>
+    <div class="field">
+      <div class="chips" data-field="goal" data-multi data-max="3">
+        <button class="chip" type="button">Bajar de peso</button>
+        <button class="chip" type="button">Comer más sano</button>
+        <button class="chip" type="button">Bajar grasa / colesterol</button>
+        <button class="chip" type="button">Ganar músculo</button>
+        <button class="chip" type="button">Más energía</button>
+        <button class="chip" type="button">Controlar el azúcar</button>
+        <button class="chip" type="button">Ahorrar en comida</button>
+      </div>
+      <p class="sub" id="goalCount">0 de 3</p>
+    </div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
+  </section>
+
+  <!-- 3 · Dieta -->
+  <section class="step" id="s3" hidden>
+    <h1>Tu forma de <mark>comer</mark>.</h1>
+    <p class="hint">Marca todo lo que aplique.</p>
+    <div class="field"><label>Dieta</label>
+      <div class="chips" data-field="diet" data-multi>
+        <button class="chip" type="button">Ninguna</button>
+        <button class="chip" type="button">Baja en grasa</button>
+        <button class="chip" type="button">Baja en sal</button>
+        <button class="chip" type="button">Mediterránea</button>
+        <button class="chip" type="button">Vegetariana</button>
+        <button class="chip" type="button">Vegana</button>
+        <button class="chip" type="button">Keto / low carb</button>
+        <button class="chip" type="button">Sin gluten</button>
+        <button class="chip" type="button">Diabética</button>
+        <button class="chip" type="button">GLP-1 (Ozempic…)</button>
+      </div>
+    </div>
+    <div class="field"><label for="fAllergy">No como / alergias</label><input type="text" id="fAllergy" placeholder="camarones, lácteos…" autocomplete="off"></div>
+    <div class="field"><label for="fDoctor">Notas de tu nutricionista <span style="text-transform:none">(opcional, mandan sobre todo)</span></label><textarea id="fDoctor" rows="2" placeholder="máx 1,800 kcal, poca grasa saturada…"></textarea></div>
+    <div class="field"><label>O súbelo en foto</label>
+      <input type="file" id="fNutriPhoto" accept="image/*" hidden>
+      <button class="upl" type="button" id="nutriBtn">📷 Foto del plan de tu nutricionista</button>
+      <div class="upl-prev" id="nutriPrev" hidden><img id="nutriImg" alt="Plan del nutricionista"><button type="button" class="upl-x" id="nutriX">✕ Quitar</button></div>
+      <p class="sub">¿Lo tienes en PDF? Súbele una captura de pantalla.</p>
+    </div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
+  </section>
+
+  <!-- 4 · Tu día -->
+  <section class="step" id="s4" hidden>
+    <h1>Tu día <mark>real</mark>.</h1>
+    <p class="hint">El plan cabe en tu semana, no al revés.</p>
+    <div class="field"><label for="fSchedule">Horario</label><input type="text" id="fSchedule" placeholder="oficina 8–5, libre finde" autocomplete="off"></div>
+    <div class="field"><label>Tiempo para cocinar</label>
+      <div class="chips" data-field="cookTime"><button class="chip" type="button">15 min</button><button class="chip" type="button">30 min</button><button class="chip" type="button">45+</button><button class="chip" type="button">Casi no cocino</button></div>
+    </div>
+    <div class="field"><label>¿Quién cocina?</label>
+      <div class="chips" data-field="cook"><button class="chip" type="button">Yo</button><button class="chip" type="button">Alguien más</button><button class="chip" type="button">Entre varios</button></div>
+    </div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
+  </section>
+
+  <!-- 5 · Tu familia -->
+  <section class="step" id="s5" hidden>
+    <h1>¿Para quiénes <mark>cocinamos</mark>?</h1>
+    <p class="hint">Con niños o bebé, el plan respeta su edad.</p>
+    <div class="field"><label>Adultos</label>
+      <div class="chips" data-field="adults"><button class="chip" type="button">1</button><button class="chip" type="button">2</button><button class="chip" type="button">3–4</button><button class="chip" type="button">5+</button></div>
+    </div>
+    <div class="field"><label for="fKids">Niños (años)</label><input type="text" id="fKids" placeholder="3 y 7 — vacío si no hay" autocomplete="off"></div>
+    <div class="field"><label for="fBaby">Bebé (meses)</label><input type="text" id="fBaby" placeholder="8 — vacío si no hay" autocomplete="off"></div>
+    <div class="note">👶 Sin miel antes del año. Sin frutos secos enteros. Sin azúcar ni sal añadida antes de los 2.</div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
+  </section>
+
+  <!-- 6 · Súper y presupuesto -->
+  <section class="step" id="s6" hidden>
+    <h1>Tu súper, tu <mark>plata</mark>.</h1>
+    <p class="hint">La lista sale de donde de verdad compras.</p>
+    <div class="field"><label>¿Dónde compras?</label>
+      <div class="chips" data-field="market" data-multi id="marketChips"></div>
+      <p class="sub" id="marketHint"></p>
+    </div>
+    <div class="field"><label for="fMarketOther">Otra tienda / mercado</label><input type="text" id="fMarketOther" placeholder="mercado de San Felipe" autocomplete="off"></div>
+    <div class="field"><label for="fBudget">Presupuesto</label><input type="text" id="fBudget" placeholder="$200 · Q1,500 · €150" autocomplete="off"></div>
+    <div class="field"><label>Frecuencia</label>
+      <div class="chips" data-field="freq"><button class="chip" type="button">Semanal</button><button class="chip" type="button">Quincenal</button><button class="chip" type="button">Mensual</button></div>
+    </div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
+  </section>
+
+  <!-- 7 · Ejercicio -->
+  <section class="step" id="s7" hidden>
+    <h1>¿Sumamos <mark>movimiento</mark>?</h1>
+    <p class="hint">Opcional. Comida y ejercicio, coordinados.</p>
+    <div class="field"><label>¿Incluir plan de ejercicio?</label>
+      <div class="chips" data-field="wantsExercise"><button class="chip" type="button">Sí</button><button class="chip" type="button">Por ahora no</button></div>
+    </div>
+    <div class="field"><label>Hoy te mueves…</label>
+      <div class="chips" data-field="level"><button class="chip" type="button">Casi nada</button><button class="chip" type="button">Camino a veces</button><button class="chip" type="button">Regular</button></div>
+    </div>
+    <div class="field"><label for="fInjury">Condiciones / lesiones</label><input type="text" id="fInjury" placeholder="rodilla operada, ninguna…" autocomplete="off"></div>
+    <div class="field"><label for="fEquip">Tu equipo</label><input type="text" id="fEquip" placeholder="caminadora y 2 mancuernas, o nada" autocomplete="off"></div>
+    <div class="field"><label>O muéstranos tu gym</label>
+      <input type="file" id="fGymPhoto" accept="image/*" hidden>
+      <button class="upl" type="button" id="gymBtn">📷 Foto de tu gym o equipo</button>
+      <div class="upl-prev" id="gymPrev" hidden><img id="gymImg" alt="Tu gym o equipo"><button type="button" class="upl-x" id="gymX">✕ Quitar</button></div>
+      <p class="sub">Tu rutina usará solo lo que se ve en la foto.</p>
+    </div>
+    <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Ver mi plan</button></div>
+  </section>
+
+  <!-- 8 · Plan -->
+  <section class="step" id="s8" hidden>
+    <h1 id="resultTitle">Tu plan.</h1>
+    <p class="hint" id="resultHint">Tu súper. Tu presupuesto. Tu familia. Make it yours.</p>
+    <div class="plan-card" id="planCard">
+      <div class="thinking" id="planWait" hidden><span class="dot"></span><span id="planWaitText">Armando tu plan…</span></div>
+      <div id="planOut"></div>
+    </div>
+    <div class="adjust" id="adjustRow" hidden>
+      <input type="text" id="fAdjust" placeholder="“sin pescado el martes”">
+      <button class="btn primary" type="button" id="adjustBtn">Ajustar</button>
+    </div>
+    <div class="nav">
+      <button class="btn ghost" type="button" data-back>← Editar</button>
+      <button class="btn primary" type="button" id="genBtn">Generar mi plan</button>
+    </div>
+    <p class="fineprint">Tus respuestas y fotos se usan únicamente para generar tu plan en este momento; no las guardamos. Precios estimados. Esto no sustituye consejo médico — consulta a tu médico, nutricionista o pediatra.</p>
+  </section>
+</div>
+
+<script>
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var stepCount = document.getElementById('stepCount');
+  var current = 0;
+  var state = {};
+  var accessCode = new URLSearchParams(location.search).get('k') || '';
+
+  var progressEl = document.getElementById('progress');
+  for (var i = 0; i < steps.length - 2; i++) progressEl.appendChild(document.createElement('i'));
+
+  /* ---- País: detección por zona horaria ---- */
+  var TZ_COUNTRY = {
+    'America/Panama': 'Panamá',
+    'America/Guatemala': 'Guatemala',
+    'America/Mexico_City': 'México', 'America/Monterrey': 'México', 'America/Cancun': 'México', 'America/Tijuana': 'México',
+    'America/Bogota': 'Colombia',
+    'America/Costa_Rica': 'Costa Rica',
+    'America/El_Salvador': 'El Salvador',
+    'America/Tegucigalpa': 'Honduras',
+    'America/Managua': 'Nicaragua',
+    'America/Lima': 'Perú',
+    'America/Santiago': 'Chile',
+    'America/Argentina/Buenos_Aires': 'Argentina', 'America/Argentina/Cordoba': 'Argentina',
+    'America/Montevideo': 'Uruguay',
+    'America/Guayaquil': 'Ecuador',
+    'America/Caracas': 'Venezuela',
+    'America/Santo_Domingo': 'República Dominicana',
+    'America/Puerto_Rico': 'Puerto Rico',
+    'America/Sao_Paulo': 'Brasil',
+    'Europe/Madrid': 'España',
+    'America/New_York': 'Estados Unidos', 'America/Chicago': 'Estados Unidos', 'America/Denver': 'Estados Unidos',
+    'America/Phoenix': 'Estados Unidos', 'America/Los_Angeles': 'Estados Unidos', 'America/Anchorage': 'Estados Unidos', 'Pacific/Honolulu': 'Estados Unidos'
+  };
+  var MARKETS = {
+    'Panamá': ['El Rey', 'Riba Smith', 'PriceSmart', 'Súper 99', 'Orgánica', 'Xtra'],
+    'Guatemala': ['La Torre', 'Paiz', 'Walmart', 'PriceSmart', 'Maxi Despensa'],
+    'México': ['Walmart', 'Soriana', 'Chedraui', 'La Comer', 'Costco'],
+    'Colombia': ['Éxito', 'Carulla', 'Olímpica', 'D1', 'PriceSmart'],
+    'Costa Rica': ['Automercado', 'Mas x Menos', 'Walmart', 'PriceSmart'],
+    'El Salvador': ['Súper Selectos', 'Walmart', 'PriceSmart'],
+    'Honduras': ['La Colonia', 'Walmart', 'PriceSmart'],
+    'Perú': ['Wong', 'Plaza Vea', 'Tottus', 'Metro'],
+    'Chile': ['Líder', 'Jumbo', 'Santa Isabel', 'Unimarc'],
+    'Argentina': ['Coto', 'Carrefour', 'Día', 'Jumbo'],
+    'República Dominicana': ['La Sirena', 'Jumbo', 'Nacional', 'PriceSmart'],
+    'España': ['Mercadona', 'Carrefour', 'Lidl', 'El Corte Inglés'],
+    'Estados Unidos': ['Walmart', 'Kroger', 'Costco', "Trader Joe's", 'Whole Foods']
+  };
+
+  try {
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var detected = TZ_COUNTRY[tz];
+    if (detected) {
+      document.getElementById('fCountry').value = detected;
+      document.getElementById('countryHint').hidden = false;
+    }
+  } catch (e) { /* sin detección, el campo queda manual */ }
+
+  function renderMarkets() {
+    var country = document.getElementById('fCountry').value.trim();
+    var found = null;
+    Object.keys(MARKETS).forEach(function (c) {
+      if (country.toLowerCase().indexOf(c.toLowerCase()) !== -1) found = c;
+    });
+    var list = found ? MARKETS[found] : [];
+    var wrap = document.getElementById('marketChips');
+    var prev = state.market || [];
+    wrap.innerHTML = '';
+    list.forEach(function (m) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.textContent = m;
+      if (prev.indexOf(m) !== -1) b.classList.add('on');
+      b.addEventListener('click', function () {
+        b.classList.toggle('on');
+        state.market = Array.prototype.slice.call(wrap.querySelectorAll('.chip.on')).map(function (c) { return c.textContent; });
+      });
+      wrap.appendChild(b);
+    });
+    document.getElementById('marketHint').textContent = found
+      ? 'Sugerencias para ' + found + '.'
+      : 'Escribe abajo tu tienda favorita.';
+  }
+
+  function show(i) {
+    current = i;
+    steps.forEach(function (s, idx) { s.hidden = idx !== i; });
+    Array.prototype.slice.call(progressEl.children).forEach(function (seg, idx) {
+      seg.className = (idx < i) ? 'done' : '';
+    });
+    stepCount.textContent = (i > 0 && i < steps.length - 1) ? (i + '/' + (steps.length - 2)) : '';
+    window.scrollTo({ top: 0 });
+    if (steps[i].id === 's6') renderMarkets();
+    if (steps[i].id === 's8') prepResult();
+  }
+
+  document.querySelectorAll('[data-next]').forEach(function (b) {
+    b.addEventListener('click', function () { show(Math.min(current + 1, steps.length - 1)); });
+  });
+  document.querySelectorAll('[data-back]').forEach(function (b) {
+    b.addEventListener('click', function () { show(Math.max(current - 1, 0)); });
+  });
+
+  document.querySelectorAll('.chips[data-field]:not(#marketChips)').forEach(function (group) {
+    var field = group.dataset.field;
+    var multi = group.hasAttribute('data-multi');
+    var max = parseInt(group.dataset.max || '0', 10);
+    group.querySelectorAll('.chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        if (multi) {
+          if (!chip.classList.contains('on') && max > 0 && group.querySelectorAll('.chip.on').length >= max) return;
+          chip.classList.toggle('on');
+          state[field] = Array.prototype.slice.call(group.querySelectorAll('.chip.on')).map(function (c) { return c.textContent; });
+        } else {
+          group.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('on'); });
+          chip.classList.add('on');
+          state[field] = chip.textContent;
+        }
+        if (field === 'goal') {
+          document.getElementById('goalCount').textContent = (state.goal ? state.goal.length : 0) + ' de 3';
+        }
+      });
+    });
+  });
+
+  /* ---- Fotos: plan del nutricionista y gym ---- */
+  var uploads = { nutri: null, gym: null };
+  var objectUrls = {};
+
+  function setupUpload(key, inputId, btnId, prevId, imgId, xId) {
+    var input = document.getElementById(inputId);
+    document.getElementById(btnId).addEventListener('click', function () { input.click(); });
+    input.addEventListener('change', function () {
+      var f = input.files && input.files[0];
+      if (!f) return;
+      uploads[key] = f;
+      try {
+        if (objectUrls[key]) URL.revokeObjectURL(objectUrls[key]);
+        objectUrls[key] = URL.createObjectURL(f);
+        document.getElementById(imgId).src = objectUrls[key];
+      } catch (e) { /* sin preview, la foto igual se envía */ }
+      document.getElementById(prevId).hidden = false;
+    });
+    document.getElementById(xId).addEventListener('click', function () {
+      uploads[key] = null;
+      input.value = '';
+      document.getElementById(prevId).hidden = true;
+    });
+  }
+  setupUpload('nutri', 'fNutriPhoto', 'nutriBtn', 'nutriPrev', 'nutriImg', 'nutriX');
+  setupUpload('gym', 'fGymPhoto', 'gymBtn', 'gymPrev', 'gymImg', 'gymX');
+
+  function resizeToJpegB64(file, maxSide) {
+    return new Promise(function (resolve, reject) {
+      var url;
+      try { url = URL.createObjectURL(file); } catch (e) { reject(e); return; }
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+          var c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(img.width * scale));
+          c.height = Math.max(1, Math.round(img.height * scale));
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          var dataUrl = c.toDataURL('image/jpeg', 0.85);
+          URL.revokeObjectURL(url);
+          resolve(dataUrl.split(',')[1]);
+        } catch (e) { URL.revokeObjectURL(url); reject(e); }
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('No se pudo leer la imagen')); };
+      img.src = url;
+    });
+  }
+
+  function val(id, fallback) {
+    var v = document.getElementById(id).value.trim();
+    return v || fallback;
+  }
+  function pick(field, fallback) {
+    var v = state[field];
+    if (!v || v.length === 0) return fallback;
+    return Array.isArray(v) ? v.join(', ') : v;
+  }
+
+  function profilePrompt() {
+    var wantsEx = pick('wantsExercise', 'Por ahora no') === 'Sí';
+    var markets = (state.market || []).slice();
+    var other = document.getElementById('fMarketOther').value.trim();
+    if (other) markets.push(other);
+    var marketTxt = markets.length ? markets.join(', ') : 'supermercado local';
+    var kids = val('fKids', '');
+    var baby = val('fBaby', '');
+
+    var p = [];
+    p.push('Eres el nutricionista personal' + (wantsEx ? ' y entrenador' : '') + ' de TheRutineLab. Voz de marca: directa, imperativa, cero culpa, sin presiones — solo progreso a su ritmo. Crea un plan práctico y realista en español, tuteando al usuario por su nombre.');
+    p.push('');
+    p.push('PERFIL:');
+    p.push('- Nombre: ' + val('fName', 'sin nombre') + ' · Edad: ' + val('fAge', 'no indicada') + ' · Sexo: ' + pick('sex', 'no indicado'));
+    p.push('- Vive en: ' + val('fCountry', 'no indicado'));
+    p.push('- Objetivos (máx 3, balancéalos): ' + pick('goal', 'comer más sano y variado'));
+    p.push('- Forma de comer: ' + pick('diet', 'sin dieta específica') + ' · Evitar: ' + val('fAllergy', 'nada en particular'));
+    var doctor = val('fDoctor', '');
+    if (doctor) p.push('- INDICACIONES MÉDICAS (prioridad sobre todo): ' + doctor);
+    p.push('- Horario: ' + val('fSchedule', 'no indicado') + ' · Tiempo para cocinar: ' + pick('cookTime', 'no indicado') + ' · Cocina: ' + pick('cook', 'no indicado'));
+    p.push('- Hogar: ' + pick('adults', '1') + ' adulto(s)' + (kids ? (', niños de ' + kids + ' años') : '') + (baby ? (', un bebé de ' + baby + ' meses') : ''));
+    p.push('- Compra en: ' + marketTxt + ' · Frecuencia: ' + pick('freq', 'semanal') + ' · Presupuesto: ' + val('fBudget', 'no indicado'));
+    if (wantsEx) p.push('- Ejercicio: nivel "' + pick('level', 'casi nada') + '", condiciones: ' + val('fInjury', 'ninguna') + ', equipo: ' + val('fEquip', 'ninguno'));
+    if (uploads.nutri && uploads.gym) {
+      p.push('- ADJUNTO 2 FOTOS: la primera es el plan/indicaciones de mi nutricionista (léelo con cuidado; manda sobre todo lo demás). La segunda es mi gym/equipo de ejercicio (usa SOLO lo que se ve ahí para la rutina).');
+    } else if (uploads.nutri) {
+      p.push('- ADJUNTO FOTO: el plan/indicaciones de mi nutricionista. Léelo con cuidado; manda sobre todo lo demás.');
+    } else if (uploads.gym) {
+      p.push('- ADJUNTO FOTO: mi gym/equipo de ejercicio. Usa SOLO lo que se ve ahí para la rutina.');
+    }
+    p.push('');
+    if (baby || kids) {
+      p.push('REGLAS INFANTILES OBLIGATORIAS: adapta porciones infantiles del mismo menú familiar. Bebé menor de 12 meses: nada de miel; texturas seguras para su edad; nada de frutos secos enteros ni riesgo de atragantamiento. Menores de 2 años: sin azúcar añadida ni sal añadida. Nota breve: confirmar la alimentación del bebé con su pediatra.');
+      p.push('');
+    }
+    p.push('ENTREGA (usa exactamente estas secciones, encabezados con "## "):');
+    p.push('## Tu resumen — 3 líneas: su plan y su meta calórica diaria estimada.');
+    p.push('## Menú de la semana — 7 días, desayuno/almuerzo/cena/snack en una línea por comida con kcal aproximadas. Platos típicos y realistas de su país.');
+    if (baby || kids) p.push('## Para los pequeños — cómo adaptar el menú a los niños/bebé según su edad.');
+    p.push('## Tu lista del súper — por pasillos, cantidades para todo el hogar, precio estimado por grupo en moneda local pensando en ' + marketTxt + '. Cierra con total estimado vs presupuesto.');
+    if (wantsEx) p.push('## Tu semana de movimiento — rutina semanal realista para su nivel, horario, equipo y condiciones.');
+    p.push('## Tu primer paso — una sola acción concreta para hoy.');
+    p.push('');
+    p.push('Formato: solo encabezados "## ", listas con "- " y negritas "**". Sin tablas. Máximo ~700 palabras. Si las indicaciones médicas contradicen algo, gana el médico. Cierra recordando en una línea que esto no sustituye consejo médico.');
+    return p.join('\n');
+  }
+
+  /* Render simple de markdown (escapado primero) */
+  function renderMd(md, el) {
+    var esc = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var lines = esc.split('\n');
+    var html = '';
+    var inList = false;
+    lines.forEach(function (ln) {
+      var bolded = ln.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      if (/^## /.test(ln)) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h3>' + bolded.replace(/^## /, '') + '</h3>';
+      } else if (/^- /.test(ln)) {
+        if (!inList) { html += '<ul>'; inList = true; }
+        html += '<li>' + bolded.replace(/^- /, '') + '</li>';
+      } else if (ln.trim() === '') {
+        if (inList) { html += '</ul>'; inList = false; }
+      } else {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<p>' + bolded + '</p>';
+      }
+    });
+    if (inList) html += '</ul>';
+    el.innerHTML = html;
+  }
+
+  /* ---- Generación ---- */
+  var lastPlan = '';
+  var lastProfile = '';
+  var generating = false;
+
+  function prepResult() {
+    var name = val('fName', '');
+    document.getElementById('resultTitle').innerHTML = name
+      ? (name.replace(/[<>&]/g, '') + ', tu <mark>plan</mark>.')
+      : 'Tu <mark>plan</mark>.';
+    if (!lastPlan) {
+      document.getElementById('planOut').innerHTML = '<p style="color:var(--ink-soft)">Toca <strong>Generar mi plan</strong>: menú, calorías, súper y presupuesto — resueltos.</p>';
+    }
+  }
+
+  function setWaiting(on, text) {
+    document.getElementById('planWait').hidden = !on;
+    if (text) document.getElementById('planWaitText').textContent = text;
+    document.getElementById('genBtn').disabled = on;
+    document.getElementById('adjustBtn').disabled = on;
+  }
+
+  var STATUS_COPY = {
+    403: 'Este enlace necesita su código de acceso. Pide el link completo.',
+    429: 'Mucha demanda en este momento. Espera un minuto y reintenta.',
+    500: 'El servicio no está configurado o falló. Intenta más tarde.'
+  };
+  var MARKER_COPY = {
+    '[[refused]]': 'No pudimos generar con estos datos. Cambia alguna respuesta e intenta de nuevo.',
+    '[[rate_limited]]': 'Mucha demanda en este momento. Espera un minuto y reintenta.',
+    '[[auth]]': 'El servicio no está bien configurado. Avísanos.',
+    '[[bad_request]]': 'Algo en los datos no se pudo procesar. Cambia una respuesta o quita una foto y reintenta.',
+    '[[error]]': 'Falla temporal. Toca "Generar mi plan" de nuevo en un momento.'
+  };
+
+  async function generate(turns) {
+    if (generating) return;
+    generating = true;
+    var out = document.getElementById('planOut');
+    setWaiting(true, 'Armando tu plan…');
+    try {
+      var images = [];
+      if (uploads.nutri) images.push({ media_type: 'image/jpeg', data: await resizeToJpegB64(uploads.nutri, 1400) });
+      if (uploads.gym) images.push({ media_type: 'image/jpeg', data: await resizeToJpegB64(uploads.gym, 1400) });
+
+      var res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-access-code': accessCode },
+        body: JSON.stringify({ turns: turns, images: images })
+      });
+      if (!res.ok) {
+        out.innerHTML = '<p><strong>' + (STATUS_COPY[res.status] || STATUS_COPY[500]) + '</strong></p><p class="err-detail">HTTP ' + res.status + '</p>';
+        setWaiting(false); generating = false; return;
+      }
+
+      var reader = res.body.getReader();
+      var dec = new TextDecoder();
+      var text = '';
+      while (true) {
+        var chunk = await reader.read();
+        if (chunk.done) break;
+        text += dec.decode(chunk.value, { stream: true });
+        setWaiting(true, 'Escribiendo…');
+        renderMd(text, out);
+      }
+      text += dec.decode();
+
+      var marker = null;
+      Object.keys(MARKER_COPY).forEach(function (m) {
+        if (text.indexOf(m) !== -1) { marker = m; text = text.replace(m, '').trim(); }
+      });
+      lastPlan = marker === '[[refused]]' ? '' : text;
+      renderMd(lastPlan, out);
+      if (marker) {
+        out.innerHTML += '<p><strong>' + MARKER_COPY[marker] + '</strong></p>';
+      } else {
+        document.getElementById('adjustRow').hidden = false;
+        document.getElementById('genBtn').textContent = 'Regenerar';
+      }
+    } catch (err) {
+      out.innerHTML = '<p><strong>Sin conexión o falla temporal. Revisa tu internet y reintenta.</strong></p>';
+    }
+    setWaiting(false);
+    generating = false;
+  }
+
+  document.getElementById('genBtn').addEventListener('click', function () {
+    lastProfile = profilePrompt();
+    generate(lastProfile);
+  });
+
+  document.getElementById('adjustBtn').addEventListener('click', function () {
+    var adj = document.getElementById('fAdjust').value.trim();
+    if (!adj || !lastPlan) return;
+    document.getElementById('fAdjust').value = '';
+    generate([
+      { role: 'user', content: lastProfile },
+      { role: 'assistant', content: lastPlan },
+      { role: 'user', content: 'Ajusta el plan: ' + adj + '. Devuelve el plan COMPLETO actualizado con el mismo formato y secciones.' }
+    ]);
+  });
+
+  show(0);
+</script>
+</body>
+</html>
