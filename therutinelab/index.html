@@ -4,35 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TheRutineLab — Tu experto personal</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Courier+Prime:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Doto:wght@700;900&display=swap">
 <style>
   :root {
-    --bg: #F4F2EE;
+    --bg: #F3F4F1;
     --card: #FFFFFF;
-    --ink: #111111;
-    --ink-soft: #6B6659;
-    --line: #111111;
-    --line-soft: #E3DFD5;
-    --blue: #8DA4FF;
-    --green: #CDE431;
-    --orange: #FF7D31;
-    --blue-soft: #E4EAFF;
-    --green-soft: #F2F8CF;
-    --orange-soft: #FFE7D6;
-    --btn-ink: #F4F2EE;
+    --ink: #22282A;
+    --ink-soft: #7A8287;
+    --line: #E4E7E2;
+    --dark: #22282A;
+    --dark-ink: #FFFFFF;
+    --mint: #DCF1E3;
+    --lilac: #E6E1FB;
+    --peach: #FFE7D3;
+    --sky: #DCEAF8;
+    --lemon: #F7F1C8;
+    --shadow: 0 8px 24px rgba(34, 40, 42, 0.07);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #171613;
-      --card: #211F1A;
-      --ink: #F2EFE8;
-      --ink-soft: #A5A08F;
-      --line: #F2EFE8;
-      --line-soft: #3A372E;
-      --blue-soft: #232A45;
-      --green-soft: #2E331A;
-      --orange-soft: #3E2716;
-      --btn-ink: #111111;
+      --bg: #15181A;
+      --card: #1F2427;
+      --ink: #ECF0F1;
+      --ink-soft: #93A0A6;
+      --line: #2C3336;
+      --dark: #ECF0F1;
+      --dark-ink: #15181A;
+      --mint: #22352B;
+      --lilac: #2B2741;
+      --peach: #3C2B1D;
+      --sky: #22303E;
+      --lemon: #37331C;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
   }
 
@@ -41,270 +44,284 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font-family: "Courier Prime", "Courier New", monospace;
-    font-size: 15.5px;
-    line-height: 1.5;
+    font-family: "Poppins", -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
     min-height: 100vh;
   }
   img { max-width: 100%; }
   [hidden] { display: none !important; }
   .app { max-width: 480px; margin: 0 auto; padding: 20px 18px 64px; }
 
-  .brand { display: flex; align-items: center; justify-content: space-between; padding: 4px 2px 16px; }
-  .brand .logo { font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 15px; letter-spacing: 0.02em; }
-  .brand .step-count { font: 700 12px "Courier Prime", monospace; color: var(--ink-soft); }
+  .doto { font-family: "Doto", "Courier New", monospace; font-weight: 900; }
 
-  .progress { display: flex; gap: 6px; margin-bottom: 26px; }
-  .progress i { flex: 1; height: 6px; border-radius: 99px; background: var(--line-soft); }
-  .progress i.done { background: var(--green); border: 1.5px solid var(--line); }
+  .brand { display: flex; align-items: center; justify-content: space-between; padding: 4px 2px 16px; }
+  .brand .logo { font-family: "Doto", monospace; font-weight: 900; font-size: 17px; letter-spacing: 0.04em; }
+  .brand .step-count { font: 600 12px "Poppins", sans-serif; color: var(--ink-soft); }
+
+  .progress { display: flex; gap: 6px; margin-bottom: 24px; }
+  .progress i { flex: 1; height: 5px; border-radius: 99px; background: var(--line); }
+  .progress i.done { background: var(--ink); }
 
   .step h1 {
-    font-family: "Archivo Black", "Arial Black", sans-serif;
-    font-size: clamp(24px, 6.5vw, 30px);
-    line-height: 1.08;
-    text-transform: uppercase;
-    letter-spacing: 0.005em;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: clamp(25px, 6.5vw, 30px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
     margin: 0 0 8px;
     text-wrap: balance;
   }
-  .step h1 mark { background: var(--step-soft, var(--green-soft)); color: var(--ink); padding: 0 4px; }
+  .step h1 mark { background: var(--step-soft, var(--mint)); color: var(--ink); padding: 0 6px; border-radius: 8px; }
   .step .hint { color: var(--ink-soft); font-size: 14px; margin: 0 0 22px; }
 
-  #s1 { --step-a: var(--blue); --step-soft: var(--blue-soft); }
-  #s2 { --step-a: var(--green); --step-soft: var(--green-soft); }
-  #s3 { --step-a: var(--orange); --step-soft: var(--orange-soft); }
-  #s4 { --step-a: var(--blue); --step-soft: var(--blue-soft); }
-  #s5 { --step-a: var(--green); --step-soft: var(--green-soft); }
-  #s6 { --step-a: var(--orange); --step-soft: var(--orange-soft); }
-  #s7 { --step-a: var(--blue); --step-soft: var(--blue-soft); }
-  #s8 { --step-a: var(--green); --step-soft: var(--green-soft); }
+  #s1 { --step-soft: var(--sky); }
+  #s2 { --step-soft: var(--mint); }
+  #s3 { --step-soft: var(--peach); }
+  #s4 { --step-soft: var(--sky); }
+  #s5 { --step-soft: var(--mint); }
+  #s6 { --step-soft: var(--peach); }
+  #s7 { --step-soft: var(--lilac); }
+  #s8 { --step-soft: var(--mint); }
 
   .field { margin-bottom: 18px; }
   .field > label {
     display: block;
-    font: 700 12px "Courier Prime", monospace;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ink); margin-bottom: 7px;
+    font: 600 12.5px "Poppins", sans-serif;
+    color: var(--ink);
+    margin-bottom: 7px;
   }
-  .field > label::before { content: "// "; color: var(--step-a, var(--green)); }
-  .field .sub { font-size: 12.5px; color: var(--ink-soft); margin: 5px 0 0; }
+  .field .sub { font-size: 12px; color: var(--ink-soft); margin: 5px 0 0; }
   input[type="text"], input[type="number"], textarea {
     width: 100%;
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
     color: var(--ink);
-    font: 700 15px "Courier Prime", monospace;
-    padding: 12px 13px;
+    font: 500 15px "Poppins", sans-serif;
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
   }
-  input:focus-visible, textarea:focus-visible { outline: 3px solid var(--step-a, var(--green)); outline-offset: 1px; }
-  ::placeholder { color: var(--ink-soft); opacity: 0.65; font-weight: 400; }
+  input:focus-visible, textarea:focus-visible { outline: 2.5px solid var(--ink); outline-offset: 1px; }
+  ::placeholder { color: var(--ink-soft); opacity: 0.7; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
     background: var(--card);
-    border: 2px solid var(--line);
+    border: 1.5px solid var(--line);
     border-radius: 999px;
     color: var(--ink);
-    font: 700 13.5px "Courier Prime", monospace;
-    padding: 8px 14px;
+    font: 500 13.5px "Poppins", sans-serif;
+    padding: 8px 15px;
     cursor: pointer;
   }
-  .chip.on {
-    background: var(--step-a, var(--green));
-    color: #111111;
-    box-shadow: 2.5px 2.5px 0 var(--line);
-  }
-  .chip:focus-visible { outline: 3px solid var(--step-a, var(--green)); outline-offset: 2px; }
+  .chip.on { background: var(--dark); border-color: var(--dark); color: var(--dark-ink); font-weight: 600; }
+  .chip:focus-visible { outline: 2.5px solid var(--ink); outline-offset: 2px; }
 
   .note {
     display: flex; gap: 8px; align-items: flex-start;
-    background: var(--step-soft, var(--green-soft));
-    border: 2px solid var(--line);
-    border-radius: 12px;
-    padding: 10px 12px;
+    background: var(--step-soft, var(--mint));
+    border-radius: 14px;
+    padding: 11px 13px;
     font-size: 12.5px;
-    line-height: 1.45;
+    line-height: 1.5;
     margin-top: 2px;
   }
 
   .nav { display: flex; gap: 10px; margin-top: 26px; }
   .btn {
     flex: 1;
-    border: 2px solid var(--line);
-    border-radius: 14px;
-    font: 700 15px "Courier Prime", monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 14px 16px;
+    border: none;
+    border-radius: 999px;
+    font: 600 15px "Poppins", sans-serif;
+    padding: 14px 18px;
     cursor: pointer;
   }
-  .btn.primary {
-    background: var(--ink);
-    color: var(--btn-ink);
-    box-shadow: 4px 4px 0 var(--step-a, var(--green));
-  }
-  .btn.primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--step-a, var(--green)); }
+  .btn.primary { background: var(--dark); color: var(--dark-ink); box-shadow: var(--shadow); }
+  .btn.primary:active { transform: scale(0.98); }
   .btn.primary:disabled { opacity: 0.5; cursor: default; }
-  .btn.ghost { flex: 0 0 auto; background: var(--card); color: var(--ink); }
-  .btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .btn.ghost { flex: 0 0 auto; background: var(--card); color: var(--ink); border: 1.5px solid var(--line); }
+  .btn:focus-visible { outline: 2.5px solid var(--ink); outline-offset: 2px; }
 
-  .hero-tags { display: flex; gap: 8px; margin: 0 0 18px; }
+  .hero-tags { display: flex; gap: 8px; margin: 0 0 18px; flex-wrap: wrap; }
   .sticker {
     display: inline-block;
-    font: 700 11px "Courier Prime", monospace;
-    text-transform: uppercase; letter-spacing: 0.06em;
-    border: 2px solid var(--line);
+    font: 600 11.5px "Poppins", sans-serif;
     border-radius: 999px;
-    padding: 4px 10px;
-    background: var(--card);
+    padding: 5px 12px;
   }
-  .sticker.b { background: var(--blue); color: #111; transform: rotate(-2deg); }
-  .sticker.g { background: var(--green); color: #111; transform: rotate(1.5deg); }
-  .sticker.o { background: var(--orange); color: #111; transform: rotate(-1deg); }
+  .sticker.b { background: var(--sky); }
+  .sticker.g { background: var(--mint); }
+  .sticker.o { background: var(--peach); }
 
   .modules { display: grid; gap: 10px; }
   .mod {
     display: flex; align-items: center; gap: 13px;
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: 16px;
-    padding: 14px 15px;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 16px;
     text-align: left;
     font: inherit; color: inherit; cursor: pointer;
+    box-shadow: var(--shadow);
   }
-  .mod.active { box-shadow: 4px 4px 0 var(--green); }
   .mod .ico {
-    flex: 0 0 44px; height: 44px; border-radius: 12px;
+    flex: 0 0 46px; height: 46px; border-radius: 14px;
     display: grid; place-items: center;
-    border: 2px solid var(--line);
-    font-size: 21px;
+    font-size: 22px;
   }
-  .mod h3 { margin: 0; font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 14.5px; text-transform: uppercase; }
-  .mod p { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-soft); }
-  .mod.soon { opacity: 0.5; cursor: default; }
-  .mod .soon-tag { margin-left: auto; font: 700 10px "Courier Prime", monospace; letter-spacing: 0.08em; border: 2px solid var(--line); border-radius: 999px; padding: 3px 8px; background: var(--orange); color: #111; white-space: nowrap; }
-  .mod .go { margin-left: auto; font-family: "Archivo Black", sans-serif; font-size: 16px; }
+  .mod h3 { margin: 0; font: 600 15px "Poppins", sans-serif; }
+  .mod p { margin: 1px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+  .mod.soon { opacity: 0.55; cursor: default; box-shadow: none; }
+  .mod .soon-tag { margin-left: auto; font: 600 10.5px "Poppins", sans-serif; border-radius: 999px; padding: 4px 10px; background: var(--peach); white-space: nowrap; }
+  .mod .go { margin-left: auto; font-size: 18px; font-weight: 700; }
+  .mod.continue { background: var(--dark); color: var(--dark-ink); }
+  .mod.continue p { color: var(--dark-ink); opacity: 0.7; }
 
+  /* ---- Plan como tarjetas ---- */
   .plan-card {
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 18px;
-    box-shadow: 5px 5px 0 var(--step-a, var(--green));
+    box-shadow: var(--shadow);
     margin-bottom: 14px;
     font-size: 13.5px;
     overflow-x: auto;
   }
-  .plan-card h3 {
-    font-family: "Archivo Black", "Arial Black", sans-serif;
-    font-size: 14px; text-transform: uppercase;
-    margin: 18px 0 8px;
-  }
+  .plan-card h3 { font: 600 15px "Poppins", sans-serif; margin: 16px 0 8px; }
   .plan-card h3:first-child { margin-top: 0; }
-  .plan-card h3::after { content: ""; display: block; width: 44px; height: 4px; margin-top: 4px; background: var(--step-a, var(--green)); }
   .plan-card ul { margin: 6px 0; padding-left: 18px; display: grid; gap: 4px; }
   .plan-card p { margin: 8px 0; }
-  .thinking { display: flex; align-items: center; gap: 10px; color: var(--ink-soft); font-size: 13.5px; padding: 6px 0; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); border: 2px solid var(--line); animation: pulse 1s infinite alternate; }
-  @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+  .plan-card.bare { background: transparent; box-shadow: none; padding: 0; overflow: visible; }
 
-  .adjust { display: flex; gap: 8px; margin-top: 12px; }
-  .adjust input { flex: 1; }
-  .adjust .btn { flex: 0 0 auto; padding: 12px 14px; }
+  .thinking { display: flex; align-items: center; gap: 10px; color: var(--ink-soft); font-size: 13.5px; padding: 6px 0 12px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink); animation: pulse 1s infinite alternate; }
+  @keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .dot, .skel { animation: none; } }
 
-  .upl {
-    width: 100%;
-    background: var(--card);
-    border: 2px dashed var(--line);
-    border-radius: 12px;
-    color: var(--ink);
-    font: 700 13.5px "Courier Prime", monospace;
-    padding: 13px;
-    cursor: pointer;
-  }
-  .upl:focus-visible { outline: 3px solid var(--step-a, var(--green)); outline-offset: 2px; }
-  .upl-prev { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-  .upl-prev img {
-    height: 74px; width: 74px; object-fit: cover;
-    border: 2px solid var(--line); border-radius: 10px;
-    box-shadow: 3px 3px 0 var(--step-a, var(--green));
-  }
-  .upl-x {
-    background: var(--card); border: 2px solid var(--line); border-radius: 999px;
-    font: 700 12px "Courier Prime", monospace; padding: 6px 12px; cursor: pointer; color: var(--ink);
-  }
-  .err-detail { font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
-
-  .fineprint { font-size: 11px; color: var(--ink-soft); margin-top: 16px; line-height: 1.5; }
-
-  /* ---- Plan como tarjetas ---- */
-  .plan-card.bare { background: transparent; border: 0; box-shadow: none; padding: 0; overflow: visible; }
   .pcards { display: grid; gap: 12px; }
-  .pc { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 15px; font-size: 13px; }
-  .pc.ag { box-shadow: 4px 4px 0 var(--green); }
-  .pc.ab { box-shadow: 4px 4px 0 var(--blue); }
-  .pc.ao { box-shadow: 4px 4px 0 var(--orange); }
+  .pc { border-radius: 22px; padding: 17px; font-size: 13px; background: var(--card); box-shadow: var(--shadow); }
   .pc h4 {
-    font-family: "Archivo Black", "Arial Black", sans-serif;
-    font-size: 12.5px; text-transform: uppercase;
-    margin: 0 0 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-family: "Doto", monospace; font-weight: 900;
+    font-size: 15px; letter-spacing: 0.02em;
+    margin: 0 0 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
   .pc p { margin: 6px 0 0; }
-  .stat { display: flex; align-items: baseline; gap: 7px; }
-  .stat b { font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; }
-  .stat span { font: 700 11px "Courier Prime", monospace; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
-  details.day { background: var(--card); border: 2px solid var(--line); border-radius: 14px; }
+  .bg-mint { background: var(--mint); }
+  .bg-lilac { background: var(--lilac); }
+  .bg-peach { background: var(--peach); }
+  .bg-sky { background: var(--sky); }
+  .bg-lemon { background: var(--lemon); }
+
+  .stat { display: flex; align-items: baseline; gap: 8px; }
+  .stat b { font: 700 40px/1 "Poppins", sans-serif; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat span { font: 600 11.5px "Poppins", sans-serif; color: var(--ink-soft); }
+
+  details.day { border-radius: 20px; box-shadow: var(--shadow); }
   details.day summary {
     list-style: none; cursor: pointer;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 14px;
-    font-family: "Archivo Black", "Arial Black", sans-serif;
-    font-size: 12.5px; text-transform: uppercase;
+    padding: 13px 16px;
+    font: 600 14px "Poppins", sans-serif;
   }
   details.day summary::-webkit-details-marker { display: none; }
-  details.day summary .caret { transition: transform 0.15s; }
-  details.day[open] summary { border-bottom: 2px dashed var(--line-soft); }
+  details.day summary .caret { transition: transform 0.15s; font-size: 12px; opacity: 0.6; }
   details.day[open] summary .caret { transform: rotate(180deg); }
-  .day-body { padding: 4px 14px 10px; }
-  .meal { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-bottom: 1.5px dashed var(--line-soft); font-size: 12.5px; }
-  .meal:last-child { border-bottom: 0; }
-  .meal .mn { flex: 0 0 72px; font: 700 10.5px "Courier Prime", monospace; text-transform: uppercase; color: var(--ink-soft); }
+  .day-body { padding: 0 16px 12px; }
+  .meal { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; font-size: 12.5px; }
+  .meal + .meal { border-top: 1px solid rgba(0,0,0,0.05); }
+  .meal .mn { flex: 0 0 74px; font: 600 11px "Poppins", sans-serif; color: var(--ink-soft); }
   .meal .md { flex: 1; }
-  .kcal { flex: 0 0 auto; font: 700 10.5px "Courier Prime", monospace; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px 8px; background: var(--green-soft); white-space: nowrap; }
-  .price-chip { font: 700 10.5px "Courier Prime", monospace; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px 8px; background: var(--orange-soft); white-space: nowrap; }
-  .aisle-item { display: flex; gap: 9px; align-items: center; padding: 5px 0; font-size: 12.5px; cursor: pointer; }
-  .aisle-item input { width: 17px; height: 17px; accent-color: var(--ink); flex: 0 0 auto; }
-  .aisle-item .ai-q { font: 700 11px "Courier Prime", monospace; color: var(--ink-soft); flex: 0 0 auto; }
+  .kcal, .price-chip {
+    flex: 0 0 auto; font: 600 10.5px "Poppins", sans-serif;
+    border-radius: 999px; padding: 3px 9px;
+    background: var(--card); box-shadow: var(--shadow);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+
+  .aisle-item {
+    display: flex; gap: 10px; align-items: center;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 8px 13px;
+    margin-top: 7px;
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .aisle-item input {
+    appearance: none; -webkit-appearance: none;
+    width: 20px; height: 20px; flex: 0 0 auto;
+    border: 2px solid var(--ink); border-radius: 50%;
+    display: grid; place-items: center;
+    background: transparent; cursor: pointer; margin: 0;
+  }
+  .aisle-item input:checked { background: var(--ink); }
+  .aisle-item input:checked::after { content: "✓"; color: var(--card); font-size: 11px; font-weight: 700; }
+  .aisle-item .ai-q { font: 600 11px "Poppins", sans-serif; color: var(--ink-soft); flex: 0 0 auto; }
   .aisle-item.done .ai-t, .aisle-item.done .ai-q { text-decoration: line-through; opacity: 0.45; }
-  .total-row { display: flex; gap: 10px; }
-  .total-box { flex: 1; text-align: center; border: 2px solid var(--line); border-radius: 12px; padding: 10px 8px; }
-  .total-box.tg { background: var(--green-soft); }
-  .total-box.to { background: var(--orange-soft); }
-  .total-box b { font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 19px; display: block; }
-  .total-box span { font: 700 10px "Courier Prime", monospace; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
-  .exr { display: flex; gap: 10px; padding: 6px 0; font-size: 12.5px; align-items: baseline; border-bottom: 1.5px dashed var(--line-soft); }
-  .exr:last-child { border-bottom: 0; }
-  .exr .exd { flex: 0 0 44px; font: 700 10.5px "Courier Prime", monospace; text-transform: uppercase; color: var(--ink-soft); }
-  .skel { height: 86px; border-radius: 16px; border: 2px dashed var(--line-soft); animation: pulse 1s infinite alternate; }
+
+  .total-row { display: flex; gap: 10px; margin-top: 4px; }
+  .total-box { flex: 1; text-align: center; border-radius: 16px; padding: 12px 8px; background: var(--card); box-shadow: var(--shadow); }
+  .total-box b { font: 700 20px "Poppins", sans-serif; display: block; letter-spacing: -0.01em; }
+  .total-box span { font: 600 10.5px "Poppins", sans-serif; color: var(--ink-soft); }
+
+  .exr {
+    display: flex; gap: 10px; align-items: center;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 8px 13px;
+    margin-top: 7px;
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .exr input {
+    appearance: none; -webkit-appearance: none;
+    width: 20px; height: 20px; flex: 0 0 auto;
+    border: 2px solid var(--ink); border-radius: 50%;
+    display: grid; place-items: center;
+    background: transparent; cursor: pointer; margin: 0;
+  }
+  .exr input:checked { background: var(--ink); }
+  .exr input:checked::after { content: "✓"; color: var(--card); font-size: 11px; font-weight: 700; }
+  .exr .exd { flex: 0 0 40px; font: 600 11px "Poppins", sans-serif; color: var(--ink-soft); }
+  .exr.done .ext { text-decoration: line-through; opacity: 0.5; }
+
+  .skel { height: 88px; border-radius: 22px; background: var(--line); animation: pulse 1s infinite alternate; }
   .pfull { grid-column: 1 / -1; }
 
-  /* ---- Vista de computadora / tablet (responsivo) ---- */
+  .adjust { display: flex; gap: 8px; margin-top: 12px; }
+  .adjust input { flex: 1; }
+  .adjust .btn { flex: 0 0 auto; padding: 12px 16px; }
+  .err-detail { font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+  .fineprint { font-size: 11px; color: var(--ink-soft); margin-top: 16px; line-height: 1.5; }
+
+  /* ---- Computadora / tablet ---- */
   @media (min-width: 900px) {
     .app { max-width: 960px; }
     .step { max-width: 560px; margin: 0 auto; }
     #s8 { max-width: 960px; }
     #s8 .pcards { grid-template-columns: 1fr 1fr; align-items: start; }
-    #s8 .nav, #s8 .adjust { max-width: 560px; margin-left: auto; margin-right: auto; }
+    #s8 .nav, #s8 .adjust, #s8 .fineprint { max-width: 560px; margin-left: auto; margin-right: auto; }
     #s8 .adjust { margin-top: 12px; }
+  }
+
+  /* ---- Impresión / PDF ---- */
+  @media print {
+    body { background: #fff; color: #111; }
+    .brand .step-count, .progress, .nav, .adjust, .thinking, .fineprint, .hint { display: none !important; }
+    .app { max-width: 100%; padding: 0; }
+    .pcards { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pc, details.day, .aisle-item, .exr, .total-box, .kcal, .price-chip { box-shadow: none !important; border: 1px solid #ddd; }
+    .pc, details.day { break-inside: avoid; }
+    .skel { display: none; }
   }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="brand">
-    <div class="logo">THE<span style="color:var(--orange)">RUTINE</span>LAB</div>
+    <div class="logo">THERUTINELAB</div>
     <div class="step-count" id="stepCount"></div>
   </div>
   <div class="progress" id="progress"></div>
@@ -314,15 +331,15 @@
     <div class="hero-tags"><span class="sticker g">100% fresh</span><span class="sticker b">A tu ritmo</span><span class="sticker o">Cero culpa</span></div>
     <h1>Diseña tu propia especie de rutina.</h1>
     <p class="hint">Unas preguntas → tu plan hecho para ti, tu familia, tu súper y tu presupuesto.</p>
-    <div class="modules">
+    <div class="modules" id="modules">
       <button class="mod active" type="button" data-next>
-        <div class="ico" style="background:var(--green-soft)">🥗</div>
+        <div class="ico" style="background:var(--mint)">🥗</div>
         <div><h3>Nutrición</h3><p>Menú + calorías + tu súper</p></div>
         <div class="go">→</div>
       </button>
-      <div class="mod soon"><div class="ico" style="background:var(--blue-soft)">🏋️</div><div><h3>Entrenador</h3><p>Con el equipo que ya tienes</p></div><div class="soon-tag">Pronto</div></div>
-      <div class="mod soon"><div class="ico" style="background:var(--orange-soft)">💰</div><div><h3>Finanzas</h3><p>Tu dinero en orden</p></div><div class="soon-tag">Pronto</div></div>
-      <div class="mod soon"><div class="ico" style="background:var(--blue-soft)">😴</div><div><h3>Sueño</h3><p>Descansa de verdad</p></div><div class="soon-tag">Pronto</div></div>
+      <div class="mod soon"><div class="ico" style="background:var(--sky)">🏋️</div><div><h3>Entrenador</h3><p>Con el equipo que ya tienes</p></div><div class="soon-tag">Pronto</div></div>
+      <div class="mod soon"><div class="ico" style="background:var(--peach)">💰</div><div><h3>Finanzas</h3><p>Tu dinero en orden</p></div><div class="soon-tag">Pronto</div></div>
+      <div class="mod soon"><div class="ico" style="background:var(--lilac)">😴</div><div><h3>Sueño</h3><p>Descansa de verdad</p></div><div class="soon-tag">Pronto</div></div>
     </div>
   </section>
 
@@ -379,11 +396,11 @@
       </div>
     </div>
     <div class="field"><label for="fAllergy">No como / alergias</label><input type="text" id="fAllergy" placeholder="camarones, lácteos…" autocomplete="off"></div>
-    <div class="field"><label for="fDoctor">Notas de tu nutricionista <span style="text-transform:none">(opcional, mandan sobre todo)</span></label><textarea id="fDoctor" rows="2" placeholder="máx 1,800 kcal, poca grasa saturada…"></textarea></div>
+    <div class="field"><label for="fDoctor">Notas de tu nutricionista (opcional, mandan sobre todo)</label><textarea id="fDoctor" rows="2" placeholder="máx 1,800 kcal, poca grasa saturada…"></textarea></div>
     <div class="field"><label>O súbelo en foto</label>
       <input type="file" id="fNutriPhoto" accept="image/*" hidden>
-      <button class="upl" type="button" id="nutriBtn">📷 Foto del plan de tu nutricionista</button>
-      <div class="upl-prev" id="nutriPrev" hidden><img id="nutriImg" alt="Plan del nutricionista"><button type="button" class="upl-x" id="nutriX">✕ Quitar</button></div>
+      <button class="btn ghost" type="button" id="nutriBtn" style="width:100%">📷 Foto del plan de tu nutricionista</button>
+      <div class="upl-prev" id="nutriPrev" hidden style="display:flex;align-items:center;gap:10px;margin-top:8px"><img id="nutriImg" alt="Plan del nutricionista" style="height:74px;width:74px;object-fit:cover;border-radius:14px;box-shadow:var(--shadow)"><button type="button" class="btn ghost" id="nutriX" style="padding:8px 14px">✕ Quitar</button></div>
       <p class="sub">¿Lo tienes en PDF? Súbele una captura de pantalla.</p>
     </div>
     <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Sigue</button></div>
@@ -446,8 +463,8 @@
     <div class="field"><label for="fEquip">Tu equipo</label><input type="text" id="fEquip" placeholder="caminadora y 2 mancuernas, o nada" autocomplete="off"></div>
     <div class="field"><label>O muéstranos tu gym</label>
       <input type="file" id="fGymPhoto" accept="image/*" hidden>
-      <button class="upl" type="button" id="gymBtn">📷 Foto de tu gym o equipo</button>
-      <div class="upl-prev" id="gymPrev" hidden><img id="gymImg" alt="Tu gym o equipo"><button type="button" class="upl-x" id="gymX">✕ Quitar</button></div>
+      <button class="btn ghost" type="button" id="gymBtn" style="width:100%">📷 Foto de tu gym o equipo</button>
+      <div class="upl-prev" id="gymPrev" hidden style="display:flex;align-items:center;gap:10px;margin-top:8px"><img id="gymImg" alt="Tu gym o equipo" style="height:74px;width:74px;object-fit:cover;border-radius:14px;box-shadow:var(--shadow)"><button type="button" class="btn ghost" id="gymX" style="padding:8px 14px">✕ Quitar</button></div>
       <p class="sub">Tu rutina usará solo lo que se ve en la foto.</p>
     </div>
     <div class="nav"><button class="btn ghost" type="button" data-back>←</button><button class="btn primary" type="button" data-next>Ver mi plan</button></div>
@@ -456,7 +473,7 @@
   <!-- 8 · Plan -->
   <section class="step" id="s8" hidden>
     <h1 id="resultTitle">Tu plan.</h1>
-    <p class="hint" id="resultHint">Tu súper. Tu presupuesto. Tu familia. Make it yours.</p>
+    <p class="hint" id="resultHint">Marca tu súper y tu ejercicio — tu avance se guarda en este dispositivo.</p>
     <div class="plan-card" id="planCard">
       <div class="thinking" id="planWait" hidden><span class="dot"></span><span id="planWaitText">Armando tu plan…</span></div>
       <div id="planOut"></div>
@@ -466,10 +483,11 @@
       <button class="btn primary" type="button" id="adjustBtn">Ajustar</button>
     </div>
     <div class="nav">
-      <button class="btn ghost" type="button" data-back>← Editar</button>
+      <button class="btn ghost" type="button" data-back>←</button>
+      <button class="btn ghost" type="button" id="printBtn" hidden>🖨 PDF</button>
       <button class="btn primary" type="button" id="genBtn">Generar mi plan</button>
     </div>
-    <p class="fineprint">Tus respuestas y fotos se usan únicamente para generar tu plan en este momento; no las guardamos. Precios estimados. Esto no sustituye consejo médico — consulta a tu médico, nutricionista o pediatra.</p>
+    <p class="fineprint">Tu plan y tus avances se guardan solo en este dispositivo (este navegador). Tus respuestas y fotos se usan únicamente para generar el plan; no las almacenamos en ningún servidor. Precios estimados. Esto no sustituye consejo médico — consulta a tu médico, nutricionista o pediatra.</p>
   </section>
 </div>
 
@@ -479,9 +497,58 @@
   var current = 0;
   var state = {};
   var accessCode = new URLSearchParams(location.search).get('k') || '';
+  var STORE_KEY = 'trl_v1';
+  var checks = { aisle: {}, ex: {} };
+  var lastPlan = '';
+  var lastProfile = '';
 
   var progressEl = document.getElementById('progress');
   for (var i = 0; i < steps.length - 2; i++) progressEl.appendChild(document.createElement('i'));
+
+  var TEXT_IDS = ['fName','fAge','fCountry','fAllergy','fDoctor','fSchedule','fKids','fBaby','fMarketOther','fBudget','fInjury','fEquip'];
+
+  function saveState() {
+    try {
+      var vals = {};
+      TEXT_IDS.forEach(function (id) { vals[id] = document.getElementById(id).value; });
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        state: state, vals: vals, lastPlan: lastPlan, lastProfile: lastProfile, checks: checks
+      }));
+    } catch (e) { /* almacenamiento no disponible */ }
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      state = s.state || {};
+      checks = s.checks || { aisle: {}, ex: {} };
+      lastPlan = s.lastPlan || '';
+      lastProfile = s.lastProfile || '';
+      TEXT_IDS.forEach(function (id) {
+        if (s.vals && s.vals[id]) document.getElementById(id).value = s.vals[id];
+      });
+      document.querySelectorAll('.chips[data-field]:not(#marketChips)').forEach(function (group) {
+        var v = state[group.dataset.field];
+        if (!v) return;
+        var list = Array.isArray(v) ? v : [v];
+        group.querySelectorAll('.chip').forEach(function (c) {
+          if (list.indexOf(c.textContent) !== -1) c.classList.add('on');
+        });
+      });
+      if (state.goal) document.getElementById('goalCount').textContent = state.goal.length + ' de 3';
+      if (lastPlan) {
+        var cont = document.createElement('button');
+        cont.type = 'button';
+        cont.className = 'mod continue';
+        cont.innerHTML = '<div class="ico" style="background:rgba(255,255,255,0.15)">✅</div><div><h3>Tu plan está listo</h3><p>Continuar donde quedaste</p></div><div class="go">→</div>';
+        cont.addEventListener('click', function () { show(steps.length - 1); });
+        var mods = document.getElementById('modules');
+        mods.insertBefore(cont, mods.firstChild);
+      }
+    } catch (e) { /* sin datos guardados */ }
+  }
 
   /* ---- País: detección por zona horaria ---- */
   var TZ_COUNTRY = {
@@ -522,15 +589,6 @@
     'Estados Unidos': ['Walmart', 'Kroger', 'Costco', "Trader Joe's", 'Whole Foods']
   };
 
-  try {
-    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    var detected = TZ_COUNTRY[tz];
-    if (detected) {
-      document.getElementById('fCountry').value = detected;
-      document.getElementById('countryHint').hidden = false;
-    }
-  } catch (e) { /* sin detección, el campo queda manual */ }
-
   function renderMarkets() {
     var country = document.getElementById('fCountry').value.trim();
     var found = null;
@@ -548,6 +606,7 @@
       b.addEventListener('click', function () {
         b.classList.toggle('on');
         state.market = Array.prototype.slice.call(wrap.querySelectorAll('.chip.on')).map(function (c) { return c.textContent; });
+        saveState();
       });
       wrap.appendChild(b);
     });
@@ -593,11 +652,16 @@
         if (field === 'goal') {
           document.getElementById('goalCount').textContent = (state.goal ? state.goal.length : 0) + ' de 3';
         }
+        saveState();
       });
     });
   });
 
-  /* ---- Fotos: plan del nutricionista y gym ---- */
+  TEXT_IDS.forEach(function (id) {
+    document.getElementById(id).addEventListener('change', saveState);
+  });
+
+  /* ---- Fotos ---- */
   var uploads = { nutri: null, gym: null };
   var objectUrls = {};
 
@@ -612,7 +676,7 @@
         if (objectUrls[key]) URL.revokeObjectURL(objectUrls[key]);
         objectUrls[key] = URL.createObjectURL(f);
         document.getElementById(imgId).src = objectUrls[key];
-      } catch (e) { /* sin preview, la foto igual se envía */ }
+      } catch (e) { /* sin preview */ }
       document.getElementById(prevId).hidden = false;
     });
     document.getElementById(xId).addEventListener('click', function () {
@@ -707,10 +771,10 @@
     return p.join('\n');
   }
 
-  /* Render simple de markdown (escapado primero) */
+  /* Respaldo: markdown simple (por si la IA no respeta el formato) */
   function renderMd(md, el) {
-    var esc = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    var lines = esc.split('\n');
+    var e = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var lines = e.split('\n');
     var html = '';
     var inList = false;
     lines.forEach(function (ln) {
@@ -737,43 +801,53 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  var DAY_BGS = ['bg-sky', 'bg-mint', 'bg-lilac', 'bg-peach'];
+  var AISLE_BGS = ['bg-mint', 'bg-peach', 'bg-sky', 'bg-lilac', 'bg-lemon'];
+
   function renderCards(objs, el, loading) {
     var h = '<div class="pcards">';
-    var firstDay = true;
+    var dayIdx = 0, aisleIdx = 0;
     objs.forEach(function (o) {
       if (o.t === 'resumen') {
-        h += '<div class="pc ag pfull"><h4>🥗 Tu resumen</h4>'
-          + (o.meta_kcal ? '<div class="stat"><b>' + esc(o.meta_kcal) + '</b><span>kcal / día</span></div>' : '')
+        h += '<div class="pc bg-mint pfull"><h4>Tu resumen</h4>'
+          + (o.meta_kcal ? '<div class="stat"><b>' + esc(o.meta_kcal) + '</b><span>kcal<br>al día</span></div>' : '')
           + '<p>' + esc(o.texto) + '</p></div>';
       } else if (o.t === 'dia') {
-        h += '<details class="day"' + (firstDay ? ' open' : '') + '><summary>' + esc(o.dia) + '<span class="caret">▾</span></summary><div class="day-body">'
+        h += '<details class="day ' + DAY_BGS[dayIdx % DAY_BGS.length] + '"' + (dayIdx === 0 ? ' open' : '') + '><summary>' + esc(o.dia) + '<span class="caret">▼</span></summary><div class="day-body">'
           + (o.comidas || []).map(function (m) {
               return '<div class="meal"><span class="mn">' + esc(m.n) + '</span><span class="md">' + esc(m.p) + '</span>'
-                + (m.kcal ? '<span class="kcal">' + esc(m.kcal) + '</span>' : '') + '</div>';
+                + (m.kcal ? '<span class="kcal">' + esc(m.kcal) + ' kcal</span>' : '') + '</div>';
             }).join('')
           + '</div></details>';
-        firstDay = false;
+        dayIdx++;
       } else if (o.t === 'peques') {
-        h += '<div class="pc ab"><h4>👶 Para los pequeños</h4><p>' + esc(o.texto) + '</p></div>';
+        h += '<div class="pc bg-lilac"><h4>Para los pequeños 👶</h4><p>' + esc(o.texto) + '</p></div>';
       } else if (o.t === 'pasillo') {
-        h += '<div class="pc"><h4>🛒 ' + esc(o.nombre) + (o.precio ? '<span class="price-chip">' + esc(o.precio) + '</span>' : '') + '</h4>'
+        h += '<div class="pc ' + AISLE_BGS[aisleIdx % AISLE_BGS.length] + '"><h4>' + esc(o.nombre) + (o.precio ? '<span class="price-chip">' + esc(o.precio) + '</span>' : '') + '</h4>'
           + (o.items || []).map(function (it) {
-              return '<label class="aisle-item"><input type="checkbox"><span class="ai-q">' + esc(it.q) + '</span><span class="ai-t">' + esc(it.n) + '</span></label>';
+              var key = esc(o.nombre) + '|' + esc(it.n);
+              var done = checks.aisle[key] ? ' done' : '';
+              var chk = checks.aisle[key] ? ' checked' : '';
+              return '<label class="aisle-item' + done + '" data-key="' + key + '"><input type="checkbox"' + chk + '><span class="ai-q">' + esc(it.q) + '</span><span class="ai-t">' + esc(it.n) + '</span></label>';
             }).join('')
           + '</div>';
+        aisleIdx++;
       } else if (o.t === 'total') {
-        h += '<div class="pc ao pfull"><h4>💰 Tu súper vs tu presupuesto</h4><div class="total-row">'
-          + '<div class="total-box to"><b>' + esc(o.total) + '</b><span>Total estimado</span></div>'
-          + '<div class="total-box tg"><b>' + esc(o.presupuesto) + '</b><span>Tu presupuesto</span></div>'
+        h += '<div class="pc pfull"><h4>Súper vs presupuesto</h4><div class="total-row">'
+          + '<div class="total-box" style="background:var(--peach)"><b>' + esc(o.total) + '</b><span>Total estimado</span></div>'
+          + '<div class="total-box" style="background:var(--mint)"><b>' + esc(o.presupuesto) + '</b><span>Tu presupuesto</span></div>'
           + '</div>' + (o.nota ? '<p>' + esc(o.nota) + '</p>' : '') + '</div>';
       } else if (o.t === 'ejercicio') {
-        h += '<div class="pc ab"><h4>🏋️ Tu semana de movimiento</h4>'
+        h += '<div class="pc bg-sky"><h4>Tu semana de movimiento</h4>'
           + (o.dias || []).map(function (d) {
-              return '<div class="exr"><span class="exd">' + esc(d.dia) + '</span><span>' + esc(d.act) + '</span></div>';
+              var key = esc(d.dia);
+              var done = checks.ex[key] ? ' done' : '';
+              var chk = checks.ex[key] ? ' checked' : '';
+              return '<label class="exr' + done + '" data-key="' + key + '"><input type="checkbox"' + chk + '><span class="exd">' + esc(d.dia) + '</span><span class="ext">' + esc(d.act) + '</span></label>';
             }).join('')
           + '</div>';
       } else if (o.t === 'paso') {
-        h += '<div class="pc ag pfull"><h4>⚡ Tu primer paso</h4><p style="font-weight:700">' + esc(o.texto) + '</p></div>';
+        h += '<div class="pc bg-lemon pfull"><h4>Tu primer paso ⚡</h4><p style="font-weight:600">' + esc(o.texto) + '</p></div>';
       } else if (o.t === 'aviso') {
         h += '<div class="pfull" style="font-size:11px;color:var(--ink-soft)">' + esc(o.texto) + '</div>';
       }
@@ -783,7 +857,18 @@
     el.innerHTML = h;
     el.querySelectorAll('.aisle-item input').forEach(function (cb) {
       cb.addEventListener('change', function () {
-        cb.closest('.aisle-item').classList.toggle('done', cb.checked);
+        var lab = cb.closest('.aisle-item');
+        lab.classList.toggle('done', cb.checked);
+        checks.aisle[lab.dataset.key] = cb.checked;
+        saveState();
+      });
+    });
+    el.querySelectorAll('.exr input').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var lab = cb.closest('.exr');
+        lab.classList.toggle('done', cb.checked);
+        checks.ex[lab.dataset.key] = cb.checked;
+        saveState();
       });
     });
   }
@@ -793,14 +878,23 @@
     text.split('\n').forEach(function (ln) {
       ln = ln.trim();
       if (!ln || ln[0] !== '{') return;
-      try { objs.push(JSON.parse(ln)); } catch (e) { /* línea incompleta o inválida */ }
+      try { objs.push(JSON.parse(ln)); } catch (e) { /* línea incompleta */ }
     });
     return objs;
   }
 
+  function renderPlan(loading) {
+    var out = document.getElementById('planOut');
+    var objs = parsePlanLines(lastPlan);
+    if (objs.length > 0) {
+      document.getElementById('planCard').classList.add('bare');
+      renderCards(objs, out, loading);
+    } else if (lastPlan) {
+      renderMd(lastPlan, out);
+    }
+  }
+
   /* ---- Generación ---- */
-  var lastPlan = '';
-  var lastProfile = '';
   var generating = false;
 
   function prepResult() {
@@ -808,7 +902,12 @@
     document.getElementById('resultTitle').innerHTML = name
       ? (name.replace(/[<>&]/g, '') + ', tu <mark>plan</mark>.')
       : 'Tu <mark>plan</mark>.';
-    if (!lastPlan) {
+    if (lastPlan) {
+      renderPlan(false);
+      document.getElementById('adjustRow').hidden = false;
+      document.getElementById('printBtn').hidden = false;
+      document.getElementById('genBtn').textContent = 'Regenerar';
+    } else {
       document.getElementById('planOut').innerHTML = '<p style="color:var(--ink-soft)">Toca <strong>Generar mi plan</strong>: menú, calorías, súper y presupuesto — resueltos.</p>';
     }
   }
@@ -854,6 +953,7 @@
       }
 
       document.getElementById('planCard').classList.add('bare');
+      checks = { aisle: {}, ex: {} };
       var reader = res.body.getReader();
       var dec = new TextDecoder();
       var text = '';
@@ -871,20 +971,16 @@
         if (text.indexOf(m) !== -1) { marker = m; text = text.replace(m, '').trim(); }
       });
       lastPlan = marker === '[[refused]]' ? '' : text;
-      var objs = parsePlanLines(lastPlan);
-      if (objs.length > 0) {
-        renderCards(objs, out, false);
-      } else if (lastPlan) {
-        renderMd(lastPlan, out); // respaldo por si la IA no respetó el formato
-      } else {
-        out.innerHTML = '';
-      }
+      renderPlan(false);
+      if (!lastPlan) out.innerHTML = '';
       if (marker) {
         out.innerHTML += '<p><strong>' + MARKER_COPY[marker] + '</strong></p>';
       } else {
         document.getElementById('adjustRow').hidden = false;
+        document.getElementById('printBtn').hidden = false;
         document.getElementById('genBtn').textContent = 'Regenerar';
       }
+      saveState();
     } catch (err) {
       out.innerHTML = '<p><strong>Sin conexión o falla temporal. Revisa tu internet y reintenta.</strong></p>';
     }
@@ -908,6 +1004,21 @@
     ]);
   });
 
+  /* ---- Imprimir / PDF ---- */
+  var closedForPrint = [];
+  document.getElementById('printBtn').addEventListener('click', function () {
+    closedForPrint = [];
+    document.querySelectorAll('details.day:not([open])').forEach(function (d) {
+      closedForPrint.push(d); d.setAttribute('open', '');
+    });
+    setTimeout(function () { window.print(); }, 60);
+  });
+  window.addEventListener('afterprint', function () {
+    closedForPrint.forEach(function (d) { d.removeAttribute('open'); });
+    closedForPrint = [];
+  });
+
+  loadState();
   show(0);
 </script>
 </body>
