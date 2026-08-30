@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TheRutineLab — Tu experto personal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='24'%20fill='%2322282A'/%3E%3Ctext%20x='50'%20y='66'%20font-size='54'%20text-anchor='middle'%3E🥗%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Doto:wght@700;900&display=swap">
 <style>
   :root {
@@ -289,6 +290,11 @@
 
   .skel { height: 88px; border-radius: 22px; background: var(--line); animation: pulse 1s infinite alternate; }
   .pfull { grid-column: 1 / -1; }
+  .hero { width: 100%; aspect-ratio: 2.4; object-fit: cover; border-radius: 22px; box-shadow: var(--shadow); display: block; }
+  .me { flex: 0 0 auto; font-size: 16px; }
+  .dsum-e { margin-left: auto; margin-right: 10px; font-size: 12px; letter-spacing: 2px; }
+  .exi { width: 36px; height: 36px; border-radius: 12px; background: var(--bg); display: grid; place-items: center; font-size: 17px; flex: 0 0 auto; }
+  .dtip { font-size: 11.5px; color: var(--ink-soft); margin: 8px 0 0; }
 
   .adjust { display: flex; gap: 8px; margin-top: 12px; }
   .adjust input { flex: 1; }
@@ -380,7 +386,7 @@
   <!-- 3 · Dieta -->
   <section class="step" id="s3" hidden>
     <h1>Tu forma de <mark>comer</mark>.</h1>
-    <p class="hint">Marca todo lo que aplique.</p>
+    <p class="hint">Mientras más detalle nos des, mejor sale tu plan. En serio.</p>
     <div class="field"><label>Dieta</label>
       <div class="chips" data-field="diet" data-multi>
         <button class="chip" type="button">Ninguna</button>
@@ -395,7 +401,10 @@
         <button class="chip" type="button">GLP-1 (Ozempic…)</button>
       </div>
     </div>
-    <div class="field"><label for="fAllergy">No como / alergias</label><input type="text" id="fAllergy" placeholder="camarones, lácteos…" autocomplete="off"></div>
+    <div class="field"><label for="fLikes">Lo que amas comer</label><input type="text" id="fLikes" placeholder="ceviche, pollo guisado, café con pan…" autocomplete="off">
+      <p class="sub">Antojos, comidas que repites, tu platillo favorito — todo suma.</p>
+    </div>
+    <div class="field"><label for="fAllergy">No como / alergias / odio</label><input type="text" id="fAllergy" placeholder="camarones, lácteos, odio el brócoli…" autocomplete="off"></div>
     <div class="field"><label for="fDoctor">Notas de tu nutricionista (opcional, mandan sobre todo)</label><textarea id="fDoctor" rows="2" placeholder="máx 1,800 kcal, poca grasa saturada…"></textarea></div>
     <div class="field"><label>O súbelo en foto</label>
       <input type="file" id="fNutriPhoto" accept="image/*" hidden>
@@ -461,6 +470,9 @@
     </div>
     <div class="field"><label for="fInjury">Condiciones / lesiones</label><input type="text" id="fInjury" placeholder="rodilla operada, ninguna…" autocomplete="off"></div>
     <div class="field"><label for="fEquip">Tu equipo</label><input type="text" id="fEquip" placeholder="caminadora y 2 mancuernas, o nada" autocomplete="off"></div>
+    <div class="field"><label for="fExDislike">Ejercicio que NO va contigo</label><input type="text" id="fExDislike" placeholder="nada de correr, no burpees…" autocomplete="off">
+      <p class="sub">Aunque sea "recomendable", si lo odias no lo vamos a poner.</p>
+    </div>
     <div class="field"><label>O muéstranos tu gym</label>
       <input type="file" id="fGymPhoto" accept="image/*" hidden>
       <button class="btn ghost" type="button" id="gymBtn" style="width:100%">📷 Foto de tu gym o equipo</button>
@@ -474,6 +486,12 @@
   <section class="step" id="s8" hidden>
     <h1 id="resultTitle">Tu plan.</h1>
     <p class="hint" id="resultHint">Marca tu súper y tu ejercicio — tu avance se guarda en este dispositivo.</p>
+    <div class="chips" id="planTabs" hidden style="margin-bottom:14px">
+      <button class="chip on" type="button" data-tab="plan">✨ Plan</button>
+      <button class="chip" type="button" data-tab="menu">🍽 Menú</button>
+      <button class="chip" type="button" data-tab="super">🛒 Súper</button>
+      <button class="chip" type="button" data-tab="ejercicio" id="tabEj">💪 Ejercicio</button>
+    </div>
     <div class="plan-card" id="planCard">
       <div class="thinking" id="planWait" hidden><span class="dot"></span><span id="planWaitText">Armando tu plan…</span></div>
       <div id="planOut"></div>
@@ -505,7 +523,7 @@
   var progressEl = document.getElementById('progress');
   for (var i = 0; i < steps.length - 2; i++) progressEl.appendChild(document.createElement('i'));
 
-  var TEXT_IDS = ['fName','fAge','fCountry','fAllergy','fDoctor','fSchedule','fKids','fBaby','fMarketOther','fBudget','fInjury','fEquip'];
+  var TEXT_IDS = ['fName','fAge','fCountry','fLikes','fAllergy','fDoctor','fSchedule','fKids','fBaby','fMarketOther','fBudget','fInjury','fEquip','fExDislike'];
 
   function saveState() {
     try {
@@ -736,13 +754,18 @@
     p.push('- Nombre: ' + val('fName', 'sin nombre') + ' · Edad: ' + val('fAge', 'no indicada') + ' · Sexo: ' + pick('sex', 'no indicado'));
     p.push('- Vive en: ' + val('fCountry', 'no indicado'));
     p.push('- Objetivos (máx 3, balancéalos): ' + pick('goal', 'comer más sano y variado'));
-    p.push('- Forma de comer: ' + pick('diet', 'sin dieta específica') + ' · Evitar: ' + val('fAllergy', 'nada en particular'));
+    p.push('- Forma de comer: ' + pick('diet', 'sin dieta específica'));
+    p.push('- Le ENCANTA comer (úsalo mucho): ' + val('fLikes', 'no indicado'));
+    p.push('- NO comer nunca (alergias u odios — respétalo siempre): ' + val('fAllergy', 'nada en particular'));
     var doctor = val('fDoctor', '');
     if (doctor) p.push('- INDICACIONES MÉDICAS (prioridad sobre todo): ' + doctor);
     p.push('- Horario: ' + val('fSchedule', 'no indicado') + ' · Tiempo para cocinar: ' + pick('cookTime', 'no indicado') + ' · Cocina: ' + pick('cook', 'no indicado'));
     p.push('- Hogar: ' + pick('adults', '1') + ' adulto(s)' + (kids ? (', niños de ' + kids + ' años') : '') + (baby ? (', un bebé de ' + baby + ' meses') : ''));
     p.push('- Compra en: ' + marketTxt + ' · Frecuencia: ' + pick('freq', 'semanal') + ' · Presupuesto: ' + val('fBudget', 'no indicado'));
-    if (wantsEx) p.push('- Ejercicio: nivel "' + pick('level', 'casi nada') + '", condiciones: ' + val('fInjury', 'ninguna') + ', equipo: ' + val('fEquip', 'ninguno'));
+    if (wantsEx) {
+      p.push('- Ejercicio: nivel "' + pick('level', 'casi nada') + '", condiciones: ' + val('fInjury', 'ninguna') + ', equipo: ' + val('fEquip', 'ninguno'));
+      p.push('- Ejercicio que NO incluir jamás (aunque sea recomendable): ' + val('fExDislike', 'ninguno'));
+    }
     if (uploads.nutri && uploads.gym) {
       p.push('- ADJUNTO 2 FOTOS: la primera es el plan/indicaciones de mi nutricionista (léelo con cuidado; manda sobre todo lo demás). La segunda es mi gym/equipo de ejercicio (usa SOLO lo que se ve ahí para la rutina).');
     } else if (uploads.nutri) {
@@ -756,14 +779,14 @@
       p.push('');
     }
     p.push('FORMATO DE SALIDA — OBLIGATORIO: responde SOLO con líneas JSON válidas (NDJSON), UNA por línea. Nada de markdown, nada de texto fuera de los objetos JSON. Emite las líneas en este orden exacto:');
-    p.push('{"t":"resumen","meta_kcal":1800,"texto":"2-3 frases directas sobre su plan"}');
-    p.push('{"t":"dia","dia":"Lunes","comidas":[{"n":"Desayuno","p":"platillo típico de su país","kcal":320},{"n":"Almuerzo","p":"...","kcal":450},{"n":"Cena","p":"...","kcal":400},{"n":"Snack","p":"...","kcal":150}]}');
-    p.push('(7 líneas "dia": Lunes a Domingo, variadas, dentro de la meta calórica)');
+    p.push('{"t":"resumen","meta_kcal":1800,"texto":"2-3 frases directas sobre su plan","porque":"1-2 frases: POR QUÉ este enfoque para SUS objetivos y su vida"}');
+    p.push('{"t":"dia","dia":"Lunes","tip":"1 frase: por qué esta combinación hoy","comidas":[{"e":"🍳","n":"Desayuno","p":"platillo típico de su país","kcal":320},{"e":"🍗","n":"Almuerzo","p":"...","kcal":450},{"e":"🥗","n":"Cena","p":"...","kcal":400},{"e":"🍎","n":"Snack","p":"...","kcal":150}]}');
+    p.push('(7 líneas "dia": Lunes a Domingo, variadas, dentro de la meta calórica; usa MUCHO sus comidas favoritas; "e" = 1 emoji que represente el platillo)');
     if (baby || kids) p.push('{"t":"peques","texto":"cómo adaptar el menú a los niños/bebé según su edad, respetando las reglas infantiles"}');
     p.push('{"t":"pasillo","nombre":"Frutas y verduras","precio":"$12","items":[{"q":"2 lb","n":"tomate"},{"q":"1 ud","n":"lechuga"}]}');
     p.push('(una línea "pasillo" por cada pasillo del súper: frutas/verduras, carnes/pescados, lácteos/huevo, abarrotes, congelados según aplique; cantidades para todo el hogar y para su frecuencia de compra; precios estimados en moneda local pensando en ' + marketTxt + ')');
     p.push('{"t":"total","total":"$85","presupuesto":"su presupuesto","nota":"1 frase comparando"}');
-    if (wantsEx) p.push('{"t":"ejercicio","dias":[{"dia":"Lun","act":"Caminata 30 min"},{"dia":"Mar","act":"..."}]}');
+    if (wantsEx) p.push('{"t":"ejercicio","porque":"1-2 frases: por qué esta combinación para su nivel, objetivo y condiciones","dias":[{"dia":"Lun","act":"Caminata 30 min a paso firme","e":"🚶"},{"dia":"Mar","act":"...","e":"🏋️"}]}');
     p.push('{"t":"paso","texto":"UNA sola acción concreta para hoy"}');
     p.push('{"t":"aviso","texto":"una línea recordando que esto no sustituye consejo médico"}');
     p.push('');
@@ -803,21 +826,49 @@
 
   var DAY_BGS = ['bg-sky', 'bg-mint', 'bg-lilac', 'bg-peach'];
   var AISLE_BGS = ['bg-mint', 'bg-peach', 'bg-sky', 'bg-lilac', 'bg-lemon'];
+  var TAB_TYPES = {
+    plan: ['resumen', 'peques', 'paso', 'aviso'],
+    menu: ['dia'],
+    super: ['pasillo', 'total'],
+    ejercicio: ['ejercicio']
+  };
 
-  function renderCards(objs, el, loading) {
+  function exEmoji(act) {
+    var a = String(act || '').toLowerCase();
+    if (/camin|paso/.test(a)) return '🚶';
+    if (/corr|trot/.test(a)) return '🏃';
+    if (/pesa|mancuern|fuerza|máquina|maquina/.test(a)) return '🏋️';
+    if (/yoga|estir|movilidad/.test(a)) return '🧘';
+    if (/bici|ciclismo/.test(a)) return '🚴';
+    if (/nad|piscina/.test(a)) return '🏊';
+    if (/descans|libre/.test(a)) return '😌';
+    return '💪';
+  }
+
+  function renderCards(objs, el, loading, mode) {
+    var all = mode === 'all';
+    if (!all) {
+      var allow = TAB_TYPES[mode] || [];
+      objs = objs.filter(function (o) { return allow.indexOf(o.t) !== -1; });
+    }
     var h = '<div class="pcards">';
+    if (mode === 'menu') h += '<img class="hero pfull" alt="" src="https://loremflickr.com/960/400/healthy,food" onerror="this.hidden=true">';
+    if (mode === 'ejercicio') h += '<img class="hero pfull" alt="" src="https://loremflickr.com/960/400/workout,fitness" onerror="this.hidden=true">';
     var dayIdx = 0, aisleIdx = 0;
     objs.forEach(function (o) {
       if (o.t === 'resumen') {
         h += '<div class="pc bg-mint pfull"><h4>Tu resumen</h4>'
           + (o.meta_kcal ? '<div class="stat"><b>' + esc(o.meta_kcal) + '</b><span>kcal<br>al día</span></div>' : '')
-          + '<p>' + esc(o.texto) + '</p></div>';
+          + '<p>' + esc(o.texto) + '</p>'
+          + (o.porque ? '<p class="dtip">💡 ' + esc(o.porque) + '</p>' : '') + '</div>';
       } else if (o.t === 'dia') {
-        h += '<details class="day ' + DAY_BGS[dayIdx % DAY_BGS.length] + '"' + (dayIdx === 0 ? ' open' : '') + '><summary>' + esc(o.dia) + '<span class="caret">▼</span></summary><div class="day-body">'
+        var emojis = (o.comidas || []).map(function (m) { return m.e || ''; }).join('');
+        h += '<details class="day ' + DAY_BGS[dayIdx % DAY_BGS.length] + '"' + ((all || dayIdx === 0) ? ' open' : '') + '><summary>' + esc(o.dia) + '<span class="dsum-e">' + esc(emojis) + '</span><span class="caret">▼</span></summary><div class="day-body">'
           + (o.comidas || []).map(function (m) {
-              return '<div class="meal"><span class="mn">' + esc(m.n) + '</span><span class="md">' + esc(m.p) + '</span>'
+              return '<div class="meal">' + (m.e ? '<span class="me">' + esc(m.e) + '</span>' : '') + '<span class="mn">' + esc(m.n) + '</span><span class="md">' + esc(m.p) + '</span>'
                 + (m.kcal ? '<span class="kcal">' + esc(m.kcal) + ' kcal</span>' : '') + '</div>';
             }).join('')
+          + (o.tip ? '<p class="dtip">💡 ' + esc(o.tip) + '</p>' : '')
           + '</div></details>';
         dayIdx++;
       } else if (o.t === 'peques') {
@@ -838,12 +889,13 @@
           + '<div class="total-box" style="background:var(--mint)"><b>' + esc(o.presupuesto) + '</b><span>Tu presupuesto</span></div>'
           + '</div>' + (o.nota ? '<p>' + esc(o.nota) + '</p>' : '') + '</div>';
       } else if (o.t === 'ejercicio') {
-        h += '<div class="pc bg-sky"><h4>Tu semana de movimiento</h4>'
+        h += '<div class="pc bg-sky' + (mode === 'ejercicio' ? ' pfull' : '') + '"><h4>Tu semana de movimiento</h4>'
+          + (o.porque ? '<p class="dtip" style="margin:0 0 8px">💡 ' + esc(o.porque) + '</p>' : '')
           + (o.dias || []).map(function (d) {
               var key = esc(d.dia);
               var done = checks.ex[key] ? ' done' : '';
               var chk = checks.ex[key] ? ' checked' : '';
-              return '<label class="exr' + done + '" data-key="' + key + '"><input type="checkbox"' + chk + '><span class="exd">' + esc(d.dia) + '</span><span class="ext">' + esc(d.act) + '</span></label>';
+              return '<label class="exr' + done + '" data-key="' + key + '"><input type="checkbox"' + chk + '><span class="exi">' + esc(d.e || exEmoji(d.act)) + '</span><span class="exd">' + esc(d.dia) + '</span><span class="ext">' + esc(d.act) + '</span></label>';
             }).join('')
           + '</div>';
       } else if (o.t === 'paso') {
@@ -883,16 +935,31 @@
     return objs;
   }
 
-  function renderPlan(loading) {
+  var currentTab = 'plan';
+
+  function renderPlan(loading, mode) {
     var out = document.getElementById('planOut');
     var objs = parsePlanLines(lastPlan);
     if (objs.length > 0) {
       document.getElementById('planCard').classList.add('bare');
-      renderCards(objs, out, loading);
+      renderCards(objs, out, loading, mode || currentTab);
+      if (!loading) {
+        document.getElementById('planTabs').hidden = false;
+        document.getElementById('tabEj').hidden = !objs.some(function (o) { return o.t === 'ejercicio'; });
+      }
     } else if (lastPlan) {
       renderMd(lastPlan, out);
     }
   }
+
+  document.querySelectorAll('#planTabs .chip').forEach(function (tb) {
+    tb.addEventListener('click', function () {
+      document.querySelectorAll('#planTabs .chip').forEach(function (c) { c.classList.remove('on'); });
+      tb.classList.add('on');
+      currentTab = tb.dataset.tab;
+      renderPlan(false);
+    });
+  });
 
   /* ---- Generación ---- */
   var generating = false;
@@ -954,6 +1021,9 @@
 
       document.getElementById('planCard').classList.add('bare');
       checks = { aisle: {}, ex: {} };
+      currentTab = 'plan';
+      document.getElementById('planTabs').hidden = true;
+      document.querySelectorAll('#planTabs .chip').forEach(function (c) { c.classList.toggle('on', c.dataset.tab === 'plan'); });
       var reader = res.body.getReader();
       var dec = new TextDecoder();
       var text = '';
@@ -962,7 +1032,7 @@
         if (chunk.done) break;
         text += dec.decode(chunk.value, { stream: true });
         setWaiting(true, 'Escribiendo tu plan…');
-        renderCards(parsePlanLines(text), out, true);
+        renderCards(parsePlanLines(text), out, true, 'all');
       }
       text += dec.decode();
 
@@ -1004,18 +1074,13 @@
     ]);
   });
 
-  /* ---- Imprimir / PDF ---- */
-  var closedForPrint = [];
+  /* ---- Imprimir / PDF (imprime el plan completo, todas las categorías) ---- */
   document.getElementById('printBtn').addEventListener('click', function () {
-    closedForPrint = [];
-    document.querySelectorAll('details.day:not([open])').forEach(function (d) {
-      closedForPrint.push(d); d.setAttribute('open', '');
-    });
-    setTimeout(function () { window.print(); }, 60);
+    renderPlan(false, 'all');
+    setTimeout(function () { window.print(); }, 80);
   });
   window.addEventListener('afterprint', function () {
-    closedForPrint.forEach(function (d) { d.removeAttribute('open'); });
-    closedForPrint = [];
+    renderPlan(false);
   });
 
   loadState();
