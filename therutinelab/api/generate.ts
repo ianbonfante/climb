@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-export const config = { runtime: "edge" };
+export const config = { maxDuration: 60 };
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -18,7 +18,7 @@ function jsonResponse(data: unknown, status: number): Response {
 type ClientImage = { media_type: string; data: string };
 type ClientTurn = { role: "user" | "assistant"; content: string };
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   if (req.method !== "POST") {
     return jsonResponse({ error: "method_not_allowed" }, 405);
   }
@@ -142,3 +142,5 @@ export default async function handler(req: Request): Promise<Response> {
     },
   });
 }
+
+export default { fetch: handler };
